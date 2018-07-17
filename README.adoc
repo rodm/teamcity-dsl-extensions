@@ -1,0 +1,54 @@
+= TeamCity DSL Extensions
+:uri-teamcity: https://www.jetbrains.com/teamcity/[TeamCity]
+
+A library that extends the {uri-teamcity} DSL to create build configurations based on a Gradle build template.
+
+== Using the library
+
+To use the library add the following dependency to the Maven POM in the `.teamcity` directory.
+
+    <dependency>
+        <groupId>com.github.rodm</groupId>
+        <artifactId>teamcity-dsl-extensions</artifactId>
+        <version>0.1</version>
+        <scope>compile</scope>
+    </dependency>
+
+
+Import the function `configurations`
+
+    import com.github.rodm.teamcity.gradle.configurations
+
+Use the DSL method to create one or more build configurations based on a build template, the library assumes that
+the template has a build step using Gradle.
+
+The example below shows the creation of a build template and a number of build configurations that use the
+template with different versions of Java and Gradle.
+
+    project {
+
+        val buildTemplate = Template({
+            id("Build")
+            name = "build"
+            ...
+        }
+
+        ...
+
+        configurations {
+            template(buildTemplate)
+            configuration("Functional Test - Java 7")
+            configuration("Functional Test - Java 8", "%java8.home%")
+            configuration("Functional Test - Java 9", "%java9.home%", "4.3")
+            configuration("Functional Test - Java 10", "%java10.home%", "4.7")
+        }
+    }
+
+
+== Compatibility
+
+The library is compatible with TeamCity 2018.1.
+
+== License
+
+This plugin is available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License, Version 2.0].
