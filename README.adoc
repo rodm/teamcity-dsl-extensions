@@ -5,7 +5,15 @@ A library that extends the {uri-teamcity} DSL to create build configurations bas
 
 == Using the library
 
-To use the library add the following dependency to the Maven POM in the `.teamcity` directory.
+To use the library add the following repository and dependency to the Maven POM in the `.teamcity` directory.
+
+    <repository>
+        <id>bintray-rodm-maven</id>
+        <name>bintray</name>
+        <url>https://dl.bintray.com/rodm/maven</url>
+    </repository>
+
+    ...
 
     <dependency>
         <groupId>com.github.rodm</groupId>
