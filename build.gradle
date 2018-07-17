@@ -1,6 +1,8 @@
 
 plugins {
+    id 'org.gradle.maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '1.2.51'
+    id 'com.jfrog.bintray' version '1.8.4'
 }
 
 group = 'com.github.rodm'
@@ -25,4 +27,34 @@ dependencies {
     compileOnly group: 'org.jetbrains.teamcity', name: 'configs-dsl-kotlin'
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8'
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-script-runtime'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+bintray {
+    user = findProperty('bintray.user')
+    key = findProperty('bintray.key')
+
+    publications = ['maven']
+
+    pkg {
+        repo = 'maven'
+        name = project.name
+        desc = 'A library that extends the TeamCity Kotlin DSL.'
+        websiteUrl = 'https://github.com/rodm/teamcity-dsl-extensions'
+        issueTrackerUrl = 'https://github.com/rodm/teamcity-dsl-extensions/issues'
+        vcsUrl = 'https://github.com/rodm/teamcity-dsl-extensions.git'
+        licenses = ['Apache-2.0']
+        labels = ['teamcity', 'dsl']
+
+        version {
+            name = project.version
+        }
+    }
 }
