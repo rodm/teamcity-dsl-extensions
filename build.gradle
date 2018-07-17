@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.github.rodm'
-version = '0.1-SNAPSHOT'
+version = '0.1'
 
 ext {
     serverUrl = project.findProperty('teamcity.server.url') ?: 'http://localhost:8111/app/dsl-plugins-repository'
