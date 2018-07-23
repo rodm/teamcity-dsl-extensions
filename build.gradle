@@ -23,11 +23,24 @@ repositories {
     }
 }
 
+configurations {
+    testImplementation.extendsFrom compileOnly
+}
+
 dependencies {
     compileOnly group: 'org.jetbrains.teamcity', name: 'configs-dsl-kotlin-plugins', version: '1.0-SNAPSHOT'
     compileOnly group: 'org.jetbrains.teamcity', name: 'configs-dsl-kotlin'
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8'
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-script-runtime'
+
+    testImplementation group: 'org.junit', name: 'junit-bom', version: '5.2.0'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
+
+    testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 publishing {
