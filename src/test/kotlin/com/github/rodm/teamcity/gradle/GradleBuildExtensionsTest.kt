@@ -69,4 +69,18 @@ class GradleBuildExtensionsTest {
         assertEquals("simpleRunner", buildSteps.items[0].type)
         assertEquals(arrayListOf("RUNNER_2", "RUNNER_1"), buildSteps.stepsOrder)
     }
+
+    @Test
+    fun `configuration order defines UI order`() {
+        val project = Project {
+            configurations {
+                configuration("2 - Test Build")
+                configuration("3 - Test Build")
+                configuration("1 - Test Build")
+            }
+        }
+
+        val buildTypesOrder = project.buildTypesOrder.map { buildType -> buildType.id?.value }
+        assertEquals(arrayListOf("2TestBuild", "3TestBuild", "1TestBuild"), buildTypesOrder)
+    }
 }

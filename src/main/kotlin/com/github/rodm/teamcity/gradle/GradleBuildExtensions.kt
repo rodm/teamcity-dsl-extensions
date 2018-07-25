@@ -26,10 +26,14 @@ fun Project.configurations(init: Configurations.() -> Unit = {}) {
     val configurations = Configurations()
     configurations.init()
 
+    val order = arrayListOf<BuildType>()
     val templates = configurations.templates.toTypedArray()
     configurations.configurations.forEach { configuration ->
-        buildType(TestBuildType(configuration, templates))
+        val buildType = TestBuildType(configuration, templates)
+        buildType(buildType)
+        order.add(buildType)
     }
+    buildTypesOrder = order
 }
 
 class Configurations {
