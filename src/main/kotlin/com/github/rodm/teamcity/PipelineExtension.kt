@@ -32,6 +32,7 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
             buildType(buildType)
         }
     }
+    buildTypesOrder = buildTypes.toList()
 }
 
 class Pipeline {

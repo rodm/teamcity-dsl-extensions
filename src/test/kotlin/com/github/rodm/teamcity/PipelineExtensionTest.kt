@@ -106,4 +106,28 @@ class PipelineExtensionTest {
         assertEquals("Compile", project.buildTypes[1].name)
         assertEquals(REGULAR, project.buildTypes[1].type)
     }
+
+    @Test
+    fun `stages and builds configuration order is display order`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    build {
+                        name = "Build1"
+                    }
+                }
+                stage ("Stage2") {
+                    build {
+                        name = "Build2"
+                    }
+                }
+            }
+        }
+
+        assertEquals(4, project.buildTypesOrder.size)
+        assertEquals("Stage: Stage1", project.buildTypesOrder[0].name)
+        assertEquals("Build1", project.buildTypesOrder[1].name)
+        assertEquals("Stage: Stage2", project.buildTypesOrder[2].name)
+        assertEquals("Build2", project.buildTypesOrder[3].name)
+    }
 }
