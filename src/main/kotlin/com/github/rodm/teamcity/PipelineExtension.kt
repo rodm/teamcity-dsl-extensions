@@ -19,6 +19,7 @@ package com.github.rodm.teamcity
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2018_1.Project
+import jetbrains.buildServer.configs.kotlin.v2018_1.copyTo
 
 lateinit var pipeline: Pipeline
 
@@ -48,6 +49,7 @@ class Pipeline {
 class Stage(val name: String) {
     val buildType: BuildType
     val buildTypes = arrayListOf<BuildType>()
+    var defaults = BuildType()
 
     init {
         buildType = BuildType()
@@ -55,8 +57,14 @@ class Stage(val name: String) {
         buildType.type = COMPOSITE
     }
 
+    fun defaults(init: BuildType.() -> Unit) {
+        defaults = BuildType()
+        defaults.init()
+    }
+
     fun build(init: BuildType.() -> Unit) {
         val buildType = BuildType()
+        defaults.copyTo(buildType)
         buildType.init()
         buildTypes.add(buildType)
     }

@@ -16,6 +16,7 @@
 
 package com.github.rodm.teamcity
 
+import jetbrains.buildServer.configs.kotlin.v2018_1.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildTypeSettings.Type.REGULAR
 import jetbrains.buildServer.configs.kotlin.v2018_1.Project
@@ -129,5 +130,52 @@ class PipelineExtensionTest {
         assertEquals("Build1", project.buildTypesOrder[1].name)
         assertEquals("Stage: Stage2", project.buildTypesOrder[2].name)
         assertEquals("Build2", project.buildTypesOrder[3].name)
+    }
+
+    @Test
+    fun `define default build configuration settings for a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    defaults {
+                        artifactRules = "artifactRules"
+                    }
+                    build {
+                        name = "Build1"
+                    }
+                }
+            }
+        }
+
+        assertEquals("artifactRules", project.findBuildByName("Build1")?.artifactRules)
+    }
+
+    @Test
+    fun `redefine default build configuration settings for a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    defaults {
+                        artifactRules = "artifactRules"
+                    }
+                    build {
+                        name = "Build1"
+                    }
+                    defaults {
+                        artifactRules = "newArtifactRules"
+                    }
+                    build {
+                        name = "Build2"
+                    }
+                }
+            }
+        }
+
+        assertEquals("artifactRules", project.findBuildByName("Build1")?.artifactRules)
+        assertEquals("newArtifactRules", project.findBuildByName("Build2")?.artifactRules)
+    }
+
+    private fun Project.findBuildByName(name: String) : BuildType? {
+        return buildTypes.find { build -> build.name == name }
     }
 }
