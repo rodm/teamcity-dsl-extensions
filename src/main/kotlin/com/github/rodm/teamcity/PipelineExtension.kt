@@ -42,6 +42,21 @@ class Pipeline {
     fun stage(name: String, init: Stage.() -> Unit) {
         val stage = Stage(name)
         stage.init()
+
+        val previousStage = stages.lastOrNull()
+        stage.buildType.apply {
+            dependencies {
+                stage.buildTypes.forEach { build ->
+                    snapshot(build) {}
+                    previousStage?.let {
+                        build.dependencies.snapshot(previousStage.buildType) {}
+                    }
+                }
+                previousStage?.let {
+                    snapshot(previousStage.buildType) {}
+                }
+            }
+        }
         stages.add(stage)
     }
 }

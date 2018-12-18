@@ -133,6 +133,61 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `stage depends on builds defined within a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    build {
+                        name = "Build1"
+                    }
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Stage: Stage1")?.dependencies
+        assertEquals(1, dependencies?.items?.size)
+        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        assertEquals("Build1", dependencyBuild.name)
+    }
+
+    @Test
+    fun `stage depends on previous stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                }
+                stage ("Stage2") {
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Stage: Stage2")?.dependencies
+        assertEquals(1, dependencies?.items?.size)
+        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        assertEquals("Stage: Stage1", dependencyBuild.name)
+    }
+
+    @Test
+    fun `build types in a stage depend on the previous stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                }
+                stage ("Stage2") {
+                    build {
+                        name = "Build"
+                    }
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Build")?.dependencies
+        assertEquals(1, dependencies?.items?.size)
+        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        assertEquals("Stage: Stage1", dependencyBuild.name)
+    }
+
+    @Test
     fun `define default build configuration settings for a stage`() {
         val project = Project {
             pipeline {
