@@ -19,6 +19,8 @@ package com.github.rodm.teamcity.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildFeature
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildFeatures
 import jetbrains.buildServer.configs.kotlin.v2018_1.ErrorConsumer
+import jetbrains.buildServer.configs.kotlin.v2018_1.BuildSteps
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
 
 class GradleInitScript() : BuildFeature() {
 
@@ -44,4 +46,15 @@ fun BuildFeatures.gradleInitScript(init: GradleInitScript.() -> Unit): GradleIni
     val result = GradleInitScript(init)
     feature(result)
     return result
+}
+
+fun BuildSteps.switchGradleBuildStep() {
+    script {
+        id = "SWITCH_GRADLE"
+        scriptContent = """
+            #!/bin/sh
+            JAVA_HOME=%java8.home% ./gradlew wrapper --gradle-version=%gradle.version%
+            JAVA_HOME=%java.home% ./gradlew --version
+            """.trimIndent()
+    }
 }

@@ -79,6 +79,19 @@ class GradleBuildExtensionsTest {
         assertEquals(1, validationConsumer.errors.size)
         assertEquals("build feature [1/1]: mandatory 'scriptName' property is not specified", validationConsumer.errors[0])
     }
+
+    @Test
+    fun `add build step to switch Gradle version`() {
+        val buildType = BuildType {
+            steps {
+                switchGradleBuildStep()
+            }
+        }
+
+        assertEquals(1, buildType.steps.items.size)
+        val buildSteps = buildType.steps
+        assertEquals("simpleRunner", buildSteps.items[0].type)
+    }
 }
 
 fun BuildFeature.findParam(name: String) : String? {
