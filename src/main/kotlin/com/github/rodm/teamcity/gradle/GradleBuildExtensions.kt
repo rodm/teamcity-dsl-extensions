@@ -32,7 +32,7 @@ class GradleInitScript() : BuildFeature() {
         init()
     }
 
-    var scriptName by stringParameter("name")
+    var scriptName by stringParameter("initScriptName")
 
     override fun validate(consumer: ErrorConsumer) {
         super.validate(consumer)

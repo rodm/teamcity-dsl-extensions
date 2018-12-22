@@ -48,7 +48,7 @@ class GradleBuildExtensionsTest {
         }
 
         val feature = buildType.features.items[0]
-        assertEquals("init.gradle", feature.findParam("name"))
+        assertEquals("init.gradle", feature.findParam("initScriptName"))
     }
 
     @Test
