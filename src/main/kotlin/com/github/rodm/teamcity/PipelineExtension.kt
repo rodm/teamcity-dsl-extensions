@@ -24,8 +24,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.copyTo
 lateinit var pipeline: Pipeline
 
 fun Project.pipeline(init: Pipeline.() -> Unit) {
-    pipeline = Pipeline()
-    pipeline.init()
+    pipeline = Pipeline().apply(init)
 
     pipeline.stages.forEach { stage ->
         buildType(stage.buildType)
@@ -40,8 +39,7 @@ class Pipeline {
     val stages = arrayListOf<Stage>()
 
     fun stage(name: String, init: Stage.() -> Unit) {
-        val stage = Stage(name)
-        stage.init()
+        val stage = Stage(name).apply(init)
 
         val previousStage = stages.lastOrNull()
         stage.buildType.apply {
@@ -62,19 +60,17 @@ class Pipeline {
 }
 
 class Stage(val name: String) {
-    val buildType: BuildType
+    val buildType: BuildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
     var defaults = BuildType()
 
     init {
-        buildType = BuildType()
         buildType.name = "Stage: ${name}"
         buildType.type = COMPOSITE
     }
 
     fun defaults(init: BuildType.() -> Unit) {
-        defaults = BuildType()
-        defaults.init()
+        defaults = BuildType().apply(init)
     }
 
     fun build(init: BuildType.() -> Unit) {
