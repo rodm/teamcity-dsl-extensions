@@ -21,6 +21,8 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.BuildFeatures
 import jetbrains.buildServer.configs.kotlin.v2018_1.ErrorConsumer
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildSteps
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2018_1.Template
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.gradle
 
 class GradleInitScript() : BuildFeature() {
 
@@ -57,4 +59,24 @@ fun BuildSteps.switchGradleBuildStep() {
             JAVA_HOME=%java.home% ./gradlew --version
             """.trimIndent()
     }
+}
+
+fun gradleBuildTemplate(init: Template.() -> Unit = {}): Template {
+    val template = Template()
+    template.apply {
+        params {
+            param("gradle.tasks", "clean build")
+            param("gradle.opts", "")
+        }
+        steps {
+            gradle {
+                id = "GRADLE_BUILD"
+                tasks = "%gradle.tasks%"
+                gradleParams = "%gradle.opts%"
+                enableStacktrace = true
+            }
+        }
+    }
+    template.apply(init)
+    return template
 }

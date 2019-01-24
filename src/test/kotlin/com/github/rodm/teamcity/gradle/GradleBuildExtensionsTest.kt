@@ -19,6 +19,7 @@ package com.github.rodm.teamcity.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildFeature
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_1.Consumer
+import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.GradleBuildStep
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -91,6 +92,58 @@ class GradleBuildExtensionsTest {
         assertEquals(1, buildType.steps.items.size)
         val buildSteps = buildType.steps
         assertEquals("simpleRunner", buildSteps.items[0].type)
+    }
+
+    @Test
+    fun `create a template with a Gradle build step`() {
+        val template = gradleBuildTemplate()
+
+        assertEquals(1, template.steps.items.size)
+        val buildSteps = template.steps
+        assertEquals("gradle-runner", buildSteps.items[0].type)
+        assertEquals("GRADLE_BUILD", buildSteps.items[0].id)
+    }
+
+    @Test
+    fun `gradle build template uses a parameter for tasks`() {
+        val template = gradleBuildTemplate()
+
+        val buildStep = template.steps.items[0] as GradleBuildStep
+        assertEquals("%gradle.tasks%", buildStep.tasks)
+    }
+
+    @Test
+    fun `gradle build template uses a parameter for options`() {
+        val template = gradleBuildTemplate()
+
+        val buildStep = template.steps.items[0] as GradleBuildStep
+        assertEquals("%gradle.opts%", buildStep.gradleParams)
+    }
+
+    @Test
+    fun `gradle build template enables stack trace`() {
+        val template = gradleBuildTemplate()
+
+        val buildStep = template.steps.items[0] as GradleBuildStep
+        assertEquals(true, buildStep.enableStacktrace)
+    }
+
+    @Test
+    fun `gradle build template set default values for parameters`() {
+        val template = gradleBuildTemplate()
+
+        val params = template.params.params
+        assertEquals("clean build", params.find { param -> param.name == "gradle.tasks" }?.value)
+        assertEquals("", params.find { param -> param.name == "gradle.opts"}?.value)
+    }
+
+    @Test
+    fun `customize gradle build template`() {
+        val template = gradleBuildTemplate {
+            name = "Gradle Build"
+        }
+
+        assertEquals("Gradle Build", template.name)
     }
 }
 
