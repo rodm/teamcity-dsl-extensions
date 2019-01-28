@@ -138,6 +138,14 @@ class GradleBuildExtensionsTest {
     }
 
     @Test
+    fun `gradle build template uses a parameter for Java home`() {
+        val template = gradleBuildTemplate()
+
+        val buildStep = template.steps.items[0] as GradleBuildStep
+        assertEquals("%java.home%", buildStep.jdkHome)
+    }
+
+    @Test
     fun `customize gradle build template`() {
         val template = gradleBuildTemplate {
             name = "Gradle Build"

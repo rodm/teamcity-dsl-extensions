@@ -74,6 +74,7 @@ fun gradleBuildTemplate(init: Template.() -> Unit = {}): Template {
                 tasks = "%gradle.tasks%"
                 gradleParams = "%gradle.opts%"
                 enableStacktrace = true
+                jdkHome = "%java.home%"
             }
         }
     }
