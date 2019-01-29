@@ -12,6 +12,9 @@ version = '0.2-SNAPSHOT'
 
 ext {
     serverUrl = project.findProperty('teamcity.server.url') ?: 'http://localhost:8111/app/dsl-plugins-repository'
+    repositoryUrl = findProperty('repository.url') ?: ''
+    repositoryUsername = findProperty('repository.username') ?: ''
+    repositoryPassword = findProperty('repository.password') ?: ''
 }
 
 repositories {
@@ -45,6 +48,17 @@ test {
 }
 
 publishing {
+    repositories {
+        maven {
+            url repositoryUrl
+
+            credentials {
+                username repositoryUsername
+                password repositoryPassword
+            }
+        }
+    }
+
     publications {
         maven(MavenPublication) {
             from components.java
