@@ -7,6 +7,8 @@ A library that extends the {uri-teamcity} DSL to create build configurations bas
 
 To use the library add the following repository and dependency to the Maven POM in the `.teamcity` directory.
 
+[source, xml]
+----
     <repository>
         <id>bintray-rodm-maven</id>
         <name>bintray</name>
@@ -18,40 +20,81 @@ To use the library add the following repository and dependency to the Maven POM 
     <dependency>
         <groupId>com.github.rodm</groupId>
         <artifactId>teamcity-dsl-extensions</artifactId>
-        <version>0.1</version>
+        <version>0.2</version>
         <scope>compile</scope>
     </dependency>
+----
 
+Import the `pipeline` function
 
-Import the function `configurations`
+    import com.github.rodm.teamcity.pipeline
 
-    import com.github.rodm.teamcity.gradle.configurations
+Use the DSL method to create a pipeline with one or more stages, and each stage with one or more build configurations.
 
-Use the DSL method to create one or more build configurations based on a build template, the library assumes that
-the template has a build step using Gradle.
+The example below shows the creation of a build template and a pipeline with 2 stages. The first stage defines
+default settings for each of the following build configurations. Each stage is represented in TeamCity as a composite
+build configuration with dependencies on each build configuration defined in the stage. Build configurations in
+subsequent stages have a dependency on the previous stage build configuration.
 
-The example below shows the creation of a build template and a number of build configurations that use the
-template with different versions of Java and Gradle.
+[source, kotlin]
+----
+    import com.github.rodm.teamcity.pipeline
 
     project {
 
-        val buildTemplate = Template({
-            id("Build")
-            name = "build"
+        val buildTemplate = gradleBuildTemplate {
+            id("GradleBuild")
+            name = "Gradle Build"
             ...
         }
 
-        ...
+        pipeline {
+            stage("Stage 1") {
+                defaults {
+                    failureConditions {
+                        executionTimeoutMin = 10
+                    }
+                }
 
-        configurations {
-            template(buildTemplate)
-            configuration("Functional Test - Java 7")
-            configuration("Functional Test - Java 8", "%java8.home%")
-            configuration("Functional Test - Java 9", "%java9.home%", "4.3")
-            configuration("Functional Test - Java 10", "%java10.home%", "4.7")
+                build {
+                    templates(buildTemplate)
+                    id("Build1")
+                    name = "Build 1"
+                }
+
+                build {
+                    templates(buildTemplate)
+                    id("Build2")
+                    name = "Build 2"
+                }
+            }
+            stage("Stage 2") {
+                build {
+                    templates(buildTemplate)
+                    id("ExamplePublish")
+                    name = "Publish"
+                }
+            }
         }
     }
+----
 
+Configuring a GitHub issue tracker can be defined using the `githubIssueTracker` function
+
+[source, kotlin]
+----
+    import com.github.rodm.teamcity.project.githubIssueTracker
+
+    project {
+        features {
+            githubIssueTracker {
+                displayName = "TeamCityDSLExtensions"
+                repository = "https://github.com/rodm/teamcity-dsl-extensions"
+                pattern = """#(\d+)"""
+            }
+        }
+    }
+----
 
 == Compatibility
 
