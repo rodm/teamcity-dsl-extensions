@@ -50,9 +50,6 @@ class Pipeline {
                         build.dependencies.snapshot(previousStage.buildType) {}
                     }
                 }
-                previousStage?.let {
-                    snapshot(previousStage.buildType) {}
-                }
             }
         }
         stages.add(stage)
