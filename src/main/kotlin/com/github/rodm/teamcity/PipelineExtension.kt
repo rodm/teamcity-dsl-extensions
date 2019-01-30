@@ -65,6 +65,7 @@ class Stage(val name: String) {
     var defaults = BuildType()
 
     init {
+        buildType.id("Stage_${name}".replace("\\W".toRegex(), ""))
         buildType.name = "Stage: ${name}"
         buildType.type = COMPOSITE
     }

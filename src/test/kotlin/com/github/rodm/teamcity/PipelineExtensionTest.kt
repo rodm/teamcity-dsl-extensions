@@ -168,6 +168,32 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `stage build type has id`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                }
+            }
+        }
+
+        val stageBuildType = project.buildTypes[0]
+        assertEquals("Stage_Stage1", stageBuildType.id?.toString())
+    }
+
+    @Test
+    fun `stage build type has id without whitespace`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage One") {
+                }
+            }
+        }
+
+        val stageBuildType = project.buildTypes[0]
+        assertEquals("Stage_StageOne", stageBuildType.id?.toString())
+    }
+
+    @Test
     fun `build types in a stage depend on the previous stage`() {
         val project = Project {
             pipeline {
