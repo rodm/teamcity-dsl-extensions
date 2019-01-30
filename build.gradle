@@ -11,10 +11,11 @@ group = 'com.github.rodm'
 version = '0.3-SNAPSHOT'
 
 ext {
-    serverUrl = project.findProperty('teamcity.server.url') ?: 'http://localhost:8111/app/dsl-plugins-repository'
-    repositoryUrl = findProperty('repository.url') ?: ''
+    def urlName = "${project.version}".endsWith('-SNAPSHOT') ? 'repository.snapshots.url' : 'repository.releases.url'
+    repositoryUrl = findProperty(urlName) ?: ''
     repositoryUsername = findProperty('repository.username') ?: ''
     repositoryPassword = findProperty('repository.password') ?: ''
+    serverUrl = project.findProperty('teamcity.server.url') ?: 'http://localhost:8111/app/dsl-plugins-repository'
 }
 
 repositories {
