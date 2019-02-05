@@ -19,6 +19,7 @@ package com.github.rodm.teamcity.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildFeature
 import jetbrains.buildServer.configs.kotlin.v2018_1.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_1.Consumer
+import jetbrains.buildServer.configs.kotlin.v2018_1.Project
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.GradleBuildStep
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -152,6 +153,15 @@ class GradleBuildExtensionsTest {
         }
 
         assertEquals("Gradle Build", template.name)
+    }
+
+    @Test
+    fun `gradle template added to project templates`() {
+        val project = Project {
+            gradleBuildTemplate {  }
+        }
+
+        assertEquals(1, project.templates.size)
     }
 }
 
