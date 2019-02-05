@@ -21,6 +21,10 @@ import jetbrains.buildServer.configs.kotlin.v2018_1.BuildTypeSettings.Type.COMPO
 import jetbrains.buildServer.configs.kotlin.v2018_1.Project
 import jetbrains.buildServer.configs.kotlin.v2018_1.copyTo
 
+@DslMarker
+@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
+annotation class PipelineMarker
+
 lateinit var pipeline: Pipeline
 
 fun Project.pipeline(init: Pipeline.() -> Unit) {
@@ -35,6 +39,7 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
     buildTypesOrder = buildTypes.toList()
 }
 
+@PipelineMarker
 class Pipeline {
     val stages = arrayListOf<Stage>()
 
@@ -56,6 +61,7 @@ class Pipeline {
     }
 }
 
+@PipelineMarker
 class Stage(val name: String) {
     val buildType: BuildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
@@ -67,11 +73,11 @@ class Stage(val name: String) {
         buildType.type = COMPOSITE
     }
 
-    fun defaults(init: BuildType.() -> Unit) {
+    fun defaults(init: (@PipelineMarker BuildType).() -> Unit) {
         defaults = BuildType().apply(init)
     }
 
-    fun build(init: BuildType.() -> Unit) {
+    fun build(init: (@PipelineMarker BuildType).() -> Unit) {
         val buildType = BuildType()
         defaults.copyTo(buildType)
         buildType.init()
