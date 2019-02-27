@@ -16,8 +16,8 @@
 
 package com.github.rodm.teamcity.project
 
-import jetbrains.buildServer.configs.kotlin.v2018_1.Project
-import jetbrains.buildServer.configs.kotlin.v2018_1.ProjectFeature
+import jetbrains.buildServer.configs.kotlin.v2018_2.Project
+import jetbrains.buildServer.configs.kotlin.v2018_2.ProjectFeature
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

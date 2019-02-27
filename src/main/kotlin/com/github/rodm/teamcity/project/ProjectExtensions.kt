@@ -16,8 +16,8 @@
 
 package com.github.rodm.teamcity.project
 
-import jetbrains.buildServer.configs.kotlin.v2018_1.ProjectFeature
-import jetbrains.buildServer.configs.kotlin.v2018_1.ProjectFeatures
+import jetbrains.buildServer.configs.kotlin.v2018_2.ProjectFeature
+import jetbrains.buildServer.configs.kotlin.v2018_2.ProjectFeatures
 
 
 class GitHubIssueTracker() : ProjectFeature() {
