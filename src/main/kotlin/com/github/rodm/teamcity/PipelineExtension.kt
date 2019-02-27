@@ -59,6 +59,10 @@ class Pipeline {
         }
         stages.add(stage)
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    @Deprecated(level = DeprecationLevel.ERROR, message = "Pipelines can't be nested.")
+    fun pipeline(param: () -> Unit = {}) {}
 }
 
 @PipelineMarker
