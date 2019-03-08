@@ -43,24 +43,26 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
 class Pipeline {
     val stages = arrayListOf<Stage>()
 
-    fun stage(name: String, init: Stage.() -> Unit) {
+    fun stage(name: String, init: Stage.() -> Unit) : Stage {
         val stage = Stage(name).apply(init)
+        if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
 
-        val previousStage = stages.lastOrNull()
+        val stageDependencies = stage.dependencies
         stage.buildType.apply {
             dependencies {
                 stage.buildTypes.forEach { build ->
                     snapshot(build) {}
-                    previousStage?.let {
-                        build.dependencies.snapshot(previousStage.buildType) {}
+                    stageDependencies.forEach { stageDependency ->
+                        build.dependencies.snapshot(stageDependency.buildType) {}
                     }
                 }
-                previousStage?.let {
-                    snapshot(previousStage.buildType) {}
+                stageDependencies.forEach { stageDependency ->
+                    snapshot(stageDependency.buildType) {}
                 }
             }
         }
         stages.add(stage)
+        return stage
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -73,6 +75,7 @@ class Stage(val name: String) {
     val buildType: BuildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
     var defaults = BuildType()
+    val dependencies = arrayListOf<Stage>()
 
     init {
         buildType.id("Stage_${name}".replace("\\W".toRegex(), ""))
@@ -89,5 +92,9 @@ class Stage(val name: String) {
         defaults.copyTo(buildType)
         buildType.init()
         buildTypes.add(buildType)
+    }
+
+    fun dependsOn(stage: Stage) {
+        dependencies.add(stage)
     }
 }

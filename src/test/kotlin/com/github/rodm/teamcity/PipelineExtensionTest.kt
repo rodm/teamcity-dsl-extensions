@@ -168,6 +168,49 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `stage depends on specified stage`() {
+        val project = Project {
+            pipeline {
+                val stage1 = stage ("Stage1") {
+                }
+                stage ("Stage2") {
+                }
+                stage ("Stage3") {
+                    dependsOn(stage1)
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies
+        assertEquals(1, dependencies?.items?.size)
+        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        assertEquals("Stage: Stage1", dependencyBuild.name)
+    }
+
+    @Test
+    fun `stage depends on multiple earlier stages`() {
+        val project = Project {
+            pipeline {
+                val stage1 = stage ("Stage1") {
+                }
+                val stage2 = stage ("Stage2") {
+                }
+                stage ("Stage3") {
+                    dependsOn(stage1)
+                    dependsOn(stage2)
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies
+        assertEquals(2, dependencies?.items?.size)
+        val dependencyBuild1 = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        val dependencyBuild2 = dependencies?.items?.get(1)?.buildTypeId as BuildType
+        assertEquals("Stage: Stage1", dependencyBuild1.name)
+        assertEquals("Stage: Stage2", dependencyBuild2.name)
+    }
+
+    @Test
     fun `stage build type has id`() {
         val project = Project {
             pipeline {
