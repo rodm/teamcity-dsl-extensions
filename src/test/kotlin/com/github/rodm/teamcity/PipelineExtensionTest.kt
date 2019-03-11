@@ -144,9 +144,9 @@ class PipelineExtensionTest {
             }
         }
 
-        val dependencies = project.findBuildByName("Stage: Stage1")?.dependencies
-        assertEquals(1, dependencies?.items?.size)
-        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        val dependencies = project.findBuildByName("Stage: Stage1")?.dependencies?.items
+        assertEquals(1, dependencies?.size)
+        val dependencyBuild = dependencies?.get(0)?.buildTypeId as BuildType
         assertEquals("Build1", dependencyBuild.name)
     }
 
@@ -181,9 +181,9 @@ class PipelineExtensionTest {
             }
         }
 
-        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies
-        assertEquals(1, dependencies?.items?.size)
-        val dependencyBuild = dependencies?.items?.get(0)?.buildTypeId as BuildType
+        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies?.items
+        assertEquals(1, dependencies?.size)
+        val dependencyBuild = dependencies?.get(0)?.buildTypeId as BuildType
         assertEquals("Stage: Stage1", dependencyBuild.name)
     }
 
@@ -202,10 +202,10 @@ class PipelineExtensionTest {
             }
         }
 
-        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies
-        assertEquals(2, dependencies?.items?.size)
-        val dependencyBuild1 = dependencies?.items?.get(0)?.buildTypeId as BuildType
-        val dependencyBuild2 = dependencies?.items?.get(1)?.buildTypeId as BuildType
+        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies?.items
+        assertEquals(2, dependencies?.size)
+        val dependencyBuild1 = dependencies?.get(0)?.buildTypeId as BuildType
+        val dependencyBuild2 = dependencies[1].buildTypeId as BuildType
         assertEquals("Stage: Stage1", dependencyBuild1.name)
         assertEquals("Stage: Stage2", dependencyBuild2.name)
     }
