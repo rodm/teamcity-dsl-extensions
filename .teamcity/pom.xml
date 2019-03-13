@@ -13,7 +13,7 @@
   </parent>
 
     <properties>
-        <teamcity.server.url>http://localhost:8111/</teamcity.server.url>
+        <teamcity.server.url>http://localhost:8111/app/dsl-plugins-repository</teamcity.server.url>
     </properties>
 
   <repositories>
@@ -26,7 +26,7 @@
     </repository>
     <repository>
       <id>teamcity-server</id>
-      <url>${teamcity.server.url}/app/dsl-plugins-repository</url>
+      <url>${teamcity.server.url}</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
