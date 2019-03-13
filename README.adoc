@@ -13,6 +13,9 @@ To use the library add the following repository and dependency to the Maven POM 
         <id>bintray-rodm-maven</id>
         <name>bintray</name>
         <url>https://dl.bintray.com/rodm/maven</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
     </repository>
 
     ...
@@ -98,8 +101,8 @@ Configuring a GitHub issue tracker can be defined using the `githubIssueTracker`
 
 == Compatibility
 
-The library is compatible with TeamCity 2018.1.
+The library is compatible with TeamCity 2018.2.
 
 == License
 
-This plugin is available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License, Version 2.0].
+The library is available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License, Version 2.0].
