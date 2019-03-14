@@ -1,9 +1,9 @@
 
 import com.github.rodm.teamcity.pipeline
-import jetbrains.buildServer.configs.kotlin.v2018_1.CheckoutMode
+import jetbrains.buildServer.configs.kotlin.v2018_1.CheckoutMode.ON_SERVER
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_1.project
-import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.VcsTrigger
+import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.VcsTrigger.QuietPeriodMode.USE_DEFAULT
 import jetbrains.buildServer.configs.kotlin.v2018_1.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_1.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2018_1.version
@@ -31,7 +31,7 @@ project {
 
         vcs {
             root(vcsRoot)
-            checkoutMode = CheckoutMode.ON_SERVER
+            checkoutMode = ON_SERVER
         }
 
         steps {
@@ -42,14 +42,6 @@ project {
                 gradleParams = "%gradle.opts%"
                 enableStacktrace = true
                 jdkHome = "%java8.home%"
-            }
-        }
-
-        triggers {
-            vcs {
-                id = "vcsTrigger"
-                quietPeriodMode = VcsTrigger.QuietPeriodMode.USE_DEFAULT
-                branchFilter = ""
             }
         }
 
@@ -80,6 +72,26 @@ project {
                 params {
                     param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %sonar.opts%")
                     param("gradle.tasks", "clean build sonarqube")
+                }
+            }
+        }
+
+        stage ("Publish") {
+            build {
+                templates(buildTemplate)
+                id("PublishToNexus")
+                name = "Publish to Nexus"
+
+                params {
+                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %nexus.opts%")
+                    param("gradle.tasks", "clean build publishMavenPublicationToMavenRepository")
+                }
+
+                triggers {
+                    vcs {
+                        quietPeriodMode = USE_DEFAULT
+                        branchFilter = ""
+                    }
                 }
             }
         }
