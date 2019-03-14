@@ -1,4 +1,5 @@
 
+import com.github.rodm.teamcity.pipeline
 import jetbrains.buildServer.configs.kotlin.v2018_1.CheckoutMode
 import jetbrains.buildServer.configs.kotlin.v2018_1.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_1.project
@@ -60,23 +61,27 @@ project {
         }
     }
 
-    buildType {
-        templates(buildTemplate)
-        id("BuildTeamCity20181")
-        name = "Build - TeamCity 2018.1"
+    pipeline {
+        stage ("Build") {
+            build {
+                templates(buildTemplate)
+                id("BuildTeamCity20181")
+                name = "Build - TeamCity 2018.1"
 
-        params {
-            param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository")
-        }
-    }
-    buildType {
-        templates(buildTemplate)
-        id("ReportCodeQuality")
-        name = "Report - Code Quality"
+                params {
+                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository")
+                }
+            }
+            build {
+                templates(buildTemplate)
+                id("ReportCodeQuality")
+                name = "Report - Code Quality"
 
-        params {
-            param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %sonar.opts%")
-            param("gradle.tasks", "clean build sonarqube")
+                params {
+                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %sonar.opts%")
+                    param("gradle.tasks", "clean build sonarqube")
+                }
+            }
         }
     }
 }
