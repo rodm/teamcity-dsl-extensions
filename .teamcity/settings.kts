@@ -16,6 +16,11 @@ project {
         id("TeamcityDslExtensions")
         name = "teamcity-dsl-extensions"
         url = "https://github.com/rodm/teamcity-dsl-extensions.git"
+        branchSpec = """
+            +:refs/heads/(master)
+            +:refs/tags/(*)
+        """.trimIndent()
+        useTagsAsBranches = true
         useMirrors = false
     }
     vcsRoot(vcsRoot)
