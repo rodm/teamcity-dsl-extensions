@@ -54,6 +54,8 @@ project {
     }
 
     pipeline {
+        val serverUrl = "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository"
+
         stage ("Build") {
             build {
                 templates(buildTemplate)
@@ -61,7 +63,7 @@ project {
                 name = "Build - TeamCity 2018.1"
 
                 params {
-                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository")
+                    param("gradle.opts", serverUrl)
                 }
             }
             build {
@@ -70,7 +72,7 @@ project {
                 name = "Report - Code Quality"
 
                 params {
-                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %sonar.opts%")
+                    param("gradle.opts", "${serverUrl} %sonar.opts%")
                     param("gradle.tasks", "clean build sonarqube")
                 }
             }
@@ -83,7 +85,7 @@ project {
                 name = "Publish to Nexus"
 
                 params {
-                    param("gradle.opts", "-Pteamcity.server.url=%teamcity.serverUrl%/app/dsl-plugins-repository %nexus.opts%")
+                    param("gradle.opts", "${serverUrl} %nexus.opts%")
                     param("gradle.tasks", "clean build publishMavenPublicationToMavenRepository")
                 }
 
@@ -91,6 +93,23 @@ project {
                     vcs {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = ""
+                    }
+                }
+            }
+            build {
+                templates(buildTemplate)
+                id("PublishToBintray")
+                name = "Publish to Bintray"
+
+                params {
+                    param("gradle.opts", "${serverUrl} %bintray.opts%")
+                    param("gradle.tasks", "clean build bintrayUpload")
+                }
+
+                triggers {
+                    vcs {
+                        quietPeriodMode = USE_DEFAULT
+                        branchFilter = "+:v*"
                     }
                 }
             }
