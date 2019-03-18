@@ -51,6 +51,23 @@ fun BuildFeatures.gradleInitScript(init: GradleInitScript.() -> Unit): GradleIni
     return result
 }
 
+class GradleBuildCache() : BuildFeature() {
+
+    init {
+        type = "gradle-build-cache"
+    }
+
+    constructor(init: GradleBuildCache.() -> Unit): this() {
+        init()
+    }
+}
+
+fun BuildFeatures.gradleBuildCache(init: GradleBuildCache.() -> Unit): GradleBuildCache {
+    val result = GradleBuildCache(init)
+    feature(result)
+    return result
+}
+
 fun BuildSteps.switchGradleBuildStep() {
     script {
         id = "SWITCH_GRADLE"

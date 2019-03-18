@@ -83,6 +83,19 @@ class GradleBuildExtensionsTest {
     }
 
     @Test
+    fun `add Gradle Build Cache feature to a build configuration`() {
+        val buildType = BuildType {
+            features {
+                gradleBuildCache {}
+            }
+        }
+
+        assertEquals(1, buildType.features.items.size)
+        val feature = buildType.features.items[0]
+        assertEquals("gradle-build-cache", feature.type)
+    }
+
+    @Test
     fun `add build step to switch Gradle version`() {
         val buildType = BuildType {
             steps {
