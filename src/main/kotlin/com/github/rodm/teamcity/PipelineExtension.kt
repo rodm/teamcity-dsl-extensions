@@ -20,10 +20,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
-
-@DslMarker
-@Target(AnnotationTarget.CLASS, AnnotationTarget.TYPE)
-annotation class PipelineMarker
+import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
 
 lateinit var pipeline: Pipeline
 
@@ -39,7 +36,7 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
     buildTypesOrder = buildTypes.toList()
 }
 
-@PipelineMarker
+@TeamCityDsl
 class Pipeline {
     val stages = arrayListOf<Stage>()
 
@@ -64,13 +61,9 @@ class Pipeline {
         stages.add(stage)
         return stage
     }
-
-    @Suppress("UNUSED_PARAMETER")
-    @Deprecated(level = DeprecationLevel.ERROR, message = "Pipelines can't be nested.")
-    fun pipeline(param: () -> Unit = {}) {}
 }
 
-@PipelineMarker
+@TeamCityDsl
 class Stage(val name: String) {
     val buildType: BuildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
@@ -83,11 +76,11 @@ class Stage(val name: String) {
         buildType.type = COMPOSITE
     }
 
-    fun defaults(init: (@PipelineMarker BuildType).() -> Unit) {
+    fun defaults(init: BuildType.() -> Unit) {
         defaults = BuildType().apply(init)
     }
 
-    fun build(init: (@PipelineMarker BuildType).() -> Unit) {
+    fun build(init: BuildType.() -> Unit) {
         val buildType = BuildType()
         defaults.copyTo(buildType)
         buildType.init()
