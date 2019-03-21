@@ -1,4 +1,2 @@
 
-enableFeaturePreview('IMPROVED_POM_SUPPORT')
-
 rootProject.name = 'teamcity-dsl-extensions'
