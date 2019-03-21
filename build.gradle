@@ -38,7 +38,7 @@ dependencies {
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jdk8'
     compileOnly group: 'org.jetbrains.kotlin', name: 'kotlin-script-runtime'
 
-    testImplementation group: 'org.junit', name: 'junit-bom', version: '5.3.2'
+    testImplementation group: 'org.junit', name: 'junit-bom', version: '5.4.1'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api'
 
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
