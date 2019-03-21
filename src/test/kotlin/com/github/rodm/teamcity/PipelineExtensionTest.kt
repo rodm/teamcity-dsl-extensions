@@ -22,7 +22,10 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.REGUL
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class PipelineExtensionTest {
 
@@ -297,6 +300,78 @@ class PipelineExtensionTest {
 
         assertEquals("artifactRules", project.findBuildByName("Build1")?.artifactRules)
         assertEquals("newArtifactRules", project.findBuildByName("Build2")?.artifactRules)
+    }
+
+    @Test
+    fun `define artifacts with producer and consumer rules`() {
+        val artifact = Artifact("producerRules", "consumerRules")
+
+        assertEquals("producerRules", artifact.producerRules)
+        assertEquals("consumerRules", artifact.consumerRules)
+        assertNull(artifact.producer)
+    }
+
+    @Test
+    fun `attach build that produces the artifacts`() {
+        val artifact = Artifact("producerRules", "consumerRules")
+        val project = Project {
+            pipeline {
+                stage("Stage1") {
+                    build {
+                        name = "Build1"
+                        produces(artifact)
+                    }
+                }
+            }
+        }
+
+        assertNotNull(artifact.producer)
+        assertSame(project.findBuildByName("Build1"), artifact.producer)
+    }
+
+    @Test
+    fun `consumer rules are set on the artifact dependency of the consuming build`() {
+        val artifact = Artifact("producerRules", "consumerRules")
+        val project = Project {
+            pipeline {
+                stage("Stage1") {
+                    build {
+                        name = "Build1"
+                        produces(artifact)
+                    }
+                    build {
+                        name = "Build2"
+                        consumes(artifact)
+                    }
+                }
+            }
+        }
+
+        val producingBuild = project.findBuildByName("Build1")
+        val consumingBuild = project.findBuildByName("Build2")
+        assertSame(producingBuild, consumingBuild?.dependencies?.items?.get(0)?.buildTypeId as BuildType)
+
+        val artifactDependency = consumingBuild.dependencies.items[0].artifacts[0]
+        assertEquals("consumerRules", artifactDependency.artifactRules)
+    }
+
+    @Test
+    fun `consuming an artifact without a producer throws an exception`() {
+        val artifact = Artifact("producerRules", "consumerRules")
+        val exception = assertThrows<IllegalStateException> {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        build {
+                            name = "Build2"
+                            consumes(artifact)
+                        }
+                    }
+                }
+            }
+        }
+
+        assertEquals("Missing producer", exception.message)
     }
 
     private fun Project.findBuildByName(name: String) : BuildType? {

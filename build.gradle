@@ -44,6 +44,10 @@ dependencies {
     testRuntime group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
 }
 
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport

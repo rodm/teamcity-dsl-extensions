@@ -91,3 +91,19 @@ class Stage(val name: String) {
         dependencies.add(stage)
     }
 }
+
+class Artifact(val producerRules: String, val consumerRules: String) {
+    var producer: BuildType? = null
+}
+
+fun BuildType.produces(artifact: Artifact) {
+    artifactRules = artifact.producerRules
+    artifact.producer = this
+}
+
+fun BuildType.consumes(artifact: Artifact) {
+    val producer = artifact.producer ?: throw IllegalStateException("Missing producer")
+    dependencies.artifacts(producer) {
+        artifactRules = artifact.consumerRules
+    }
+}
