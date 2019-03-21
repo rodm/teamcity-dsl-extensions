@@ -82,6 +82,20 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `stage names should be unique`() {
+        val exception = assertThrows<DuplicateNameException> {
+            Project {
+                pipeline {
+                    stage("Stage") {}
+                    stage("Stage") {}
+                }
+            }
+        }
+
+        assertEquals("Stage name 'Stage' already exists", exception.message)
+    }
+
+    @Test
     fun `stage composite builds are added to project`() {
         val project = Project {
             pipeline {

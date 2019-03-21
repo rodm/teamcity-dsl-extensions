@@ -39,8 +39,12 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
 @TeamCityDsl
 class Pipeline {
     val stages = arrayListOf<Stage>()
+    private val names = mutableSetOf<String>()
 
     fun stage(name: String, init: Stage.() -> Unit) : Stage {
+        if (names.contains(name)) throw DuplicateNameException("Stage name '${name}' already exists")
+        names.add(name)
+
         val stage = Stage(name).apply(init)
         if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
 
@@ -91,6 +95,8 @@ class Stage(val name: String) {
         dependencies.add(stage)
     }
 }
+
+class DuplicateNameException(message: String) : Exception(message)
 
 class Artifact(val producerRules: String, val consumerRules: String) {
     var producer: BuildType? = null
