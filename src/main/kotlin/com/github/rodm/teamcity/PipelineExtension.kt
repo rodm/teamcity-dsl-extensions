@@ -109,6 +109,7 @@ fun BuildType.produces(artifact: Artifact) {
 
 fun BuildType.consumes(artifact: Artifact) {
     val producer = artifact.producer ?: throw IllegalStateException("Missing producer")
+    if (producer === this) throw IllegalStateException("Consumer and producer cannot be the same build")
     dependencies.artifacts(producer) {
         artifactRules = artifact.consumerRules
     }

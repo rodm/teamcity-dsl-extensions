@@ -388,6 +388,26 @@ class PipelineExtensionTest {
         assertEquals("Missing producer", exception.message)
     }
 
+    @Test
+    fun `artifact cannot be produced and consumed by the same build`() {
+        val artifact = Artifact("producerRules", "consumerRules")
+        val exception = assertThrows<IllegalStateException> {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        build {
+                            name = "Build"
+                            produces(artifact)
+                            consumes(artifact)
+                        }
+                    }
+                }
+            }
+        }
+
+        assertEquals("Consumer and producer cannot be the same build", exception.message)
+    }
+
     private fun Project.findBuildByName(name: String) : BuildType? {
         return buildTypes.find { build -> build.name == name }
     }
