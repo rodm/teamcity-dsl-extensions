@@ -1,5 +1,9 @@
 = TeamCity DSL Extensions
 :uri-teamcity: https://www.jetbrains.com/teamcity/[TeamCity]
+:uri-teamcity-documentation: https://confluence.jetbrains.com/display/TCD18
+:uri-teamcity-artifact-path: {uri-teamcity-documentation}/Configuring+General+Settings#ConfiguringGeneralSettings-ArtifactPaths
+:uri-teamcity-artifact-dep: {uri-teamcity-documentation}/Dependent+Build#DependentBuild-ArtifactDependency
+:library-version: 0.2
 
 A library that extends the {uri-teamcity} DSL to create build configurations based on a Gradle build template.
 
@@ -23,7 +27,7 @@ To use the library add the following repository and dependency to the Maven POM 
     <dependency>
         <groupId>com.github.rodm</groupId>
         <artifactId>teamcity-dsl-extensions</artifactId>
-        <version>0.2</version>
+        <version>{library-version}</version>
         <scope>compile</scope>
     </dependency>
 ----
@@ -77,6 +81,57 @@ subsequent stages have a dependency on the previous stage build configuration.
                     id("ExamplePublish")
                     name = "Publish"
                 }
+            }
+        }
+    }
+----
+
+The default dependency for a stage can be overridden by using the `dependsOn` function. A stage can depend on one or
+more earlier stages.
+
+[source, kotlin]
+----
+    import com.github.rodm.teamcity.pipeline
+
+    project {
+        pipeline {
+            val stage1 = stage("Stage 1") {
+                ...
+            }
+            stage("Stage 2") {
+                ...
+            }
+            stage("Stage 3") {
+                dependsOn (stage1)
+                ...
+            }
+        }
+    }
+----
+
+Artifacts can be defined using the `Artifact` type. The `producerRules` and `consumerRules` patterns define the
+paths of build output artifacts collected from a producing build and the paths the artifacts are written to for
+a consuming build. More on the patterns can be found in TeamCity documentation,
+{uri-teamcity-artifact-path}[Artifact Paths] and {uri-teamcity-artifact-dep}[Artifact Dependency].
+
+    val artifact = Artifact("producerRules", "consumerRules")
+
+
+The `Artifact` is passed to the build that produces the artifact using the `produces` extension function and
+passed to the build that uses the artifact using the `consumes` extension function.
+
+[source, kotlin]
+----
+    pipeline {
+        val artifact = Artifact("producerRules", "consumerRules")
+        stage("Stage1") {
+            build {
+                name = "Build1"
+                produces(artifact)
+            }
+            build {
+                name = "Build2"
+                consumes(artifact)
             }
         }
     }
