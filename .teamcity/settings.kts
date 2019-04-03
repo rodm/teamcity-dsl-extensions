@@ -1,5 +1,6 @@
 
 import com.github.rodm.teamcity.pipeline
+import com.github.rodm.teamcity.project.githubIssueTracker
 import jetbrains.buildServer.configs.kotlin.v2018_2.CheckoutMode.ON_SERVER
 import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
 import jetbrains.buildServer.configs.kotlin.v2018_2.project
@@ -24,6 +25,14 @@ project {
         useMirrors = false
     }
     vcsRoot(vcsRoot)
+
+    features {
+        githubIssueTracker {
+            displayName = "TeamCity DSL Extensions"
+            repository = "https://github.com/rodm/teamcity-dsl-extensions"
+            pattern = """#(\d+)"""
+        }
+    }
 
     val buildTemplate = template {
         id("Build")
