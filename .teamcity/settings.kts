@@ -34,6 +34,10 @@ project {
         }
     }
 
+    params {
+        param("teamcity.ui.settings.readOnly", "true")
+    }
+
     val buildTemplate = template {
         id("Build")
         name = "Build"
