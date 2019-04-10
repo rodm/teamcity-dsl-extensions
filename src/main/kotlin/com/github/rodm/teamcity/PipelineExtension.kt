@@ -21,6 +21,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPO
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.v2018_2.toId
 
 lateinit var pipeline: Pipeline
 
@@ -75,7 +76,7 @@ class Stage(val name: String) {
     val dependencies = arrayListOf<Stage>()
 
     init {
-        buildType.id("Stage_${name}".replace("\\W".toRegex(), ""))
+        buildType.id(name.toId("Stage_"))
         buildType.name = "Stage: ${name}"
         buildType.type = COMPOSITE
     }
