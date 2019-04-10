@@ -104,6 +104,8 @@ class Artifact(val producerRules: String, val consumerRules: String) {
 }
 
 fun BuildType.produces(artifact: Artifact) {
+    val producer = artifact.producer
+    if (producer !== null) throw IllegalStateException("Artifact is produced by build '${producer.name}'")
     artifactRules = artifact.producerRules
     artifact.producer = this
 }
