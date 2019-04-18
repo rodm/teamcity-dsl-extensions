@@ -21,6 +21,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPO
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.v2018_2.Template
 import jetbrains.buildServer.configs.kotlin.v2018_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2018_2.toId
 
@@ -30,6 +31,9 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
     pipeline = Pipeline().apply(init)
 
     pipeline.stages.forEach { stage ->
+        stage.templates.forEach { template ->
+            template(template)
+        }
         buildType(stage.buildType)
         stage.buildTypes.forEach { buildType ->
             buildType(buildType)
@@ -75,6 +79,7 @@ class Stage(val name: String) {
     val buildTypes = arrayListOf<BuildType>()
     var defaults = BuildType()
     val dependencies = arrayListOf<Stage>()
+    val templates = arrayListOf<Template>()
 
     init {
         buildType.id(name.toId("Stage_"))
@@ -87,6 +92,12 @@ class Stage(val name: String) {
 
     fun vcs(init: VcsSettings.() -> Unit) {
         buildType.vcs.apply(init)
+    }
+
+    fun template(init: Template.() -> Unit) : Template {
+        val template = Template().apply(init)
+        templates.add(template)
+        return template
     }
 
     fun defaults(init: BuildType.() -> Unit) {

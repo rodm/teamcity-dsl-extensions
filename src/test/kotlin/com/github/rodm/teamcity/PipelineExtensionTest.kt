@@ -20,6 +20,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.REGULAR
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
+import jetbrains.buildServer.configs.kotlin.v2018_2.Template
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertNull
@@ -314,6 +315,44 @@ class PipelineExtensionTest {
 
         assertEquals("artifactRules", project.findBuildByName("Build1")?.artifactRules)
         assertEquals("newArtifactRules", project.findBuildByName("Build2")?.artifactRules)
+    }
+
+    @Test
+    fun `define a template in a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    template {
+                        name = "Template1"
+                    }
+                }
+            }
+        }
+
+        assertEquals(1, project.templates.size)
+        assertEquals("Template1", project.templates[0].name)
+    }
+
+    @Test
+    fun `define and use a template in a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    val template = template {
+                        name = "Template1"
+                    }
+                    build {
+                        name = "Build1"
+                        templates(template)
+                    }
+                }
+            }
+        }
+
+        val build = project.findBuildByName("Build1")
+        assertEquals(1, build?.templates?.size)
+        val template = build?.templates?.get(0) as Template
+        assertEquals("Template1", template.name)
     }
 
     @Test
