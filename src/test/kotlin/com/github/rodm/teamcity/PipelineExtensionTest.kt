@@ -229,6 +229,39 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `stage depends on earlier stage by name`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                }
+                stage ("Stage2") {
+                }
+                stage ("Stage3") {
+                    dependsOn (stage("Stage1"))
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Stage: Stage3")?.dependencies?.items
+        assertEquals(1, dependencies?.size)
+        val dependencyBuild = dependencies?.get(0)?.buildTypeId as BuildType
+        assertEquals("Stage: Stage1", dependencyBuild.name)
+    }
+
+    @Test
+    fun `lookup by invalid stage throws exception`() {
+        val exception = assertThrows<NameNotFoundException> {
+            Project {
+                pipeline {
+                    stage("Invalid name")
+                }
+            }
+        }
+
+        assertEquals("Stage 'Invalid name' not found", exception.message)
+    }
+
+    @Test
     fun `stage build type has id`() {
         val project = Project {
             pipeline {

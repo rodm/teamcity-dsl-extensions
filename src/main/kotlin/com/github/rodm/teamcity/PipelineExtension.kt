@@ -51,7 +51,7 @@ class Pipeline {
         if (names.contains(name)) throw DuplicateNameException("Stage name '${name}' already exists")
         names.add(name)
 
-        val stage = Stage(name).apply(init)
+        val stage = Stage(name, this).apply(init)
         if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
 
         val stageDependencies = stage.dependencies
@@ -71,10 +71,14 @@ class Pipeline {
         stages.add(stage)
         return stage
     }
+
+    fun stage(name: String) : Stage {
+        return stages.find { stage -> stage.name == name } ?: throw NameNotFoundException("Stage '$name' not found")
+    }
 }
 
 @TeamCityDsl
-class Stage(val name: String) {
+class Stage(val name: String, private val pipeline: Pipeline) {
     val buildType: BuildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
     var defaults = BuildType()
@@ -111,12 +115,18 @@ class Stage(val name: String) {
         buildTypes.add(buildType)
     }
 
+    fun stage(name: String) : Stage {
+        return pipeline.stage(name)
+    }
+
     fun dependsOn(stage: Stage) {
         dependencies.add(stage)
     }
 }
 
 class DuplicateNameException(message: String) : Exception(message)
+
+class NameNotFoundException(message: String) : Exception(message)
 
 class Artifact(val producerRules: String, val consumerRules: String) {
     var producer: BuildType? = null
