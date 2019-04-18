@@ -21,6 +21,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPO
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.v2018_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2018_2.toId
 
 lateinit var pipeline: Pipeline
@@ -79,6 +80,13 @@ class Stage(val name: String) {
         buildType.id(name.toId("Stage_"))
         buildType.name = "Stage: ${name}"
         buildType.type = COMPOSITE
+        buildType.vcs {
+            showDependenciesChanges = true
+        }
+    }
+
+    fun vcs(init: VcsSettings.() -> Unit) {
+        buildType.vcs.apply(init)
     }
 
     fun defaults(init: BuildType.() -> Unit) {

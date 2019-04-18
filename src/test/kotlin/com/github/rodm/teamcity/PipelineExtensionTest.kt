@@ -317,6 +317,40 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `default vcs settings for stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {}
+            }
+        }
+
+        val stageBuild = project.findBuildByName("Stage: Stage1")
+        assertEquals(true, stageBuild?.vcs?.showDependenciesChanges)
+        assertEquals(false, stageBuild?.vcs?.excludeDefaultBranchChanges)
+        assertEquals(true, stageBuild?.vcs?.buildDefaultBranch)
+    }
+
+    @Test
+    fun `change vcs settings for stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    vcs {
+                        showDependenciesChanges = false
+                        excludeDefaultBranchChanges = true
+                        buildDefaultBranch = false
+                    }
+                }
+            }
+        }
+
+        val stageBuild = project.findBuildByName("Stage: Stage1")
+        assertEquals(false, stageBuild?.vcs?.showDependenciesChanges)
+        assertEquals(true, stageBuild?.vcs?.excludeDefaultBranchChanges)
+        assertEquals(false, stageBuild?.vcs?.buildDefaultBranch)
+    }
+
+    @Test
     fun `define artifacts with producer and consumer rules`() {
         val artifact = Artifact("producerRules", "consumerRules")
 
