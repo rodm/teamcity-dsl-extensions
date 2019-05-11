@@ -389,6 +389,28 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `define and use a template by name`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    template {
+                        name = "Template1"
+                    }
+                    build {
+                        name = "Build1"
+                        templates(template("Template1"))
+                    }
+                }
+            }
+        }
+
+        val build = project.findBuildByName("Build1")
+        assertEquals(1, build?.templates?.size)
+        val template = build?.templates?.get(0) as Template
+        assertEquals("Template1", template.name)
+    }
+
+    @Test
     fun `default vcs settings for stage`() {
         val project = Project {
             pipeline {

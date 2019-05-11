@@ -108,8 +108,8 @@ class Stage(val name: String, private val pipeline: Pipeline) {
         defaults = BuildType().apply(init)
     }
 
-    fun build(init: BuildType.() -> Unit) {
-        val buildType = BuildType()
+    fun build(init: StageBuildType.() -> Unit) {
+        val buildType = StageBuildType(this)
         defaults.copyTo(buildType)
         buildType.init()
         buildTypes.add(buildType)
@@ -119,8 +119,18 @@ class Stage(val name: String, private val pipeline: Pipeline) {
         return pipeline.stage(name)
     }
 
+    fun template(name: String) : Template {
+        return templates.find { it.name == name } ?: throw NameNotFoundException("Template '${name}' not found")
+    }
+
     fun dependsOn(stage: Stage) {
         dependencies.add(stage)
+    }
+}
+
+class StageBuildType(val stage: Stage) : BuildType() {
+    fun template(name: String) : Template {
+        return stage.template(name)
     }
 }
 
