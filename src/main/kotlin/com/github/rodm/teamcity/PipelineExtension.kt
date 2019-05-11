@@ -18,6 +18,7 @@ package com.github.rodm.teamcity
 
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
+import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.DEPLOYMENT
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
@@ -112,6 +113,15 @@ class Stage(val name: String, private val pipeline: Pipeline) {
         val buildType = StageBuildType(this)
         defaults.copyTo(buildType)
         buildType.init()
+        buildTypes.add(buildType)
+    }
+
+    fun deploy(init: StageBuildType.() -> Unit) {
+        val buildType = StageBuildType(this)
+        buildType.enablePersonalBuilds = false
+        buildType.maxRunningBuilds = 1
+        buildType.init()
+        buildType.type = DEPLOYMENT
         buildTypes.add(buildType)
     }
 

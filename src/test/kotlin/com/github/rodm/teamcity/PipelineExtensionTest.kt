@@ -18,6 +18,7 @@ package com.github.rodm.teamcity
 
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
+import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.DEPLOYMENT
 import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.REGULAR
 import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import jetbrains.buildServer.configs.kotlin.v2018_2.Template
@@ -348,6 +349,46 @@ class PipelineExtensionTest {
 
         assertEquals("artifactRules", project.findBuildByName("Build1")?.artifactRules)
         assertEquals("newArtifactRules", project.findBuildByName("Build2")?.artifactRules)
+    }
+
+    @Test
+    fun `define a deploy build configuration`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    deploy {
+                        name = "Deploy"
+                    }
+                }
+            }
+        }
+
+        assertEquals(2, project.buildTypes.size)
+        assertEquals("Deploy", project.buildTypes[1].name)
+        assertEquals(DEPLOYMENT, project.buildTypes[1].type)
+        assertEquals(false, project.buildTypes[1].enablePersonalBuilds)
+        assertEquals(1, project.buildTypes[1].maxRunningBuilds)
+    }
+
+    @Test
+    fun `define a deploy build configuration overriding defaults`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    deploy {
+                        name = "Deploy"
+                        enablePersonalBuilds = true
+                        maxRunningBuilds = 2
+                    }
+                }
+            }
+        }
+
+        assertEquals(2, project.buildTypes.size)
+        assertEquals("Deploy", project.buildTypes[1].name)
+        assertEquals(DEPLOYMENT, project.buildTypes[1].type)
+        assertEquals(true, project.buildTypes[1].enablePersonalBuilds)
+        assertEquals(2, project.buildTypes[1].maxRunningBuilds)
     }
 
     @Test
