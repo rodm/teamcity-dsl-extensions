@@ -85,6 +85,9 @@ class Stage(val name: String, private val pipeline: Pipeline) {
     var defaults = BuildType()
     val dependencies = arrayListOf<Stage>()
     val templates = arrayListOf<Template>()
+    var description: String
+        get() = buildType.description
+        set(value) { buildType.description = value }
 
     init {
         buildType.id(name.toId("Stage_"))

@@ -81,6 +81,23 @@ class PipelineExtensionTest {
         val stage = pipeline.stages[0]
         assertEquals("Stage: Build", stage.buildType.name)
         assertEquals(COMPOSITE, stage.buildType.type)
+        assertEquals("", stage.buildType.description)
+    }
+
+    @Test
+    fun `stage can have a description`() {
+        Project {
+            Project {
+                pipeline {
+                    stage("Build") {
+                        description = "Build stage description"
+                    }
+                }
+            }
+
+            val stage = pipeline.stages[0]
+            assertEquals("Build stage description", stage.buildType.description)
+        }
     }
 
     @Test
