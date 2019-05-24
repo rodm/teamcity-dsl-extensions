@@ -3,7 +3,7 @@
 :uri-teamcity-documentation: https://confluence.jetbrains.com/display/TCD18
 :uri-teamcity-artifact-path: {uri-teamcity-documentation}/Configuring+General+Settings#ConfiguringGeneralSettings-ArtifactPaths
 :uri-teamcity-artifact-dep: {uri-teamcity-documentation}/Dependent+Build#DependentBuild-ArtifactDependency
-:library-version: 0.2
+:library-version: 0.4
 
 A library that extends the {uri-teamcity} DSL to create build configurations based on a Gradle build template.
 
@@ -11,7 +11,7 @@ A library that extends the {uri-teamcity} DSL to create build configurations bas
 
 To use the library add the following repository and dependency to the Maven POM in the `.teamcity` directory.
 
-[source, xml]
+[source,xml,subs="attributes,verbatim"]
 ----
     <repository>
         <id>bintray-rodm-maven</id>
@@ -76,7 +76,7 @@ subsequent stages have a dependency on the previous stage build configuration.
                 }
             }
             stage("Stage 2") {
-                build {
+                deploy {
                     templates(buildTemplate)
                     id("ExamplePublish")
                     name = "Publish"
@@ -84,6 +84,20 @@ subsequent stages have a dependency on the previous stage build configuration.
             }
         }
     }
+----
+
+The `deploy` configuration creates a build configuration with the `Deployment` type with personal builds disallowed
+and a maximum number of running builds set to 1.
+
+Stages can have an optional description
+
+[source,kotlin]
+----
+            stage("Stage") {
+                description = "Build the library"
+
+                ...
+            }
 ----
 
 The default dependency for a stage can be overridden by using the `dependsOn` function. A stage can depend on one or
@@ -108,6 +122,31 @@ more earlier stages.
         }
     }
 ----
+
+The above can also be written using the `stage(name: String)` extension function to lookup a previous stage by name.
+
+[source,kotlin]
+----
+    import com.github.rodm.teamcity.pipeline
+
+    project {
+        pipeline {
+            stage("Stage 1") {
+                ...
+            }
+            stage("Stage 2") {
+                ...
+            }
+            stage("Stage 3") {
+                dependsOn (stage("Stage 1")
+                ...
+            }
+        }
+    }
+----
+
+Templates can be defined within a stage and the `template(name: String)` extension function can be used to lookup
+a template when configuring a `build` or `deploy` build configuration.
 
 Artifacts can be defined using the `Artifact` type. The `producerRules` and `consumerRules` patterns define the
 paths of build output artifacts collected from a producing build and the paths the artifacts are written to for
