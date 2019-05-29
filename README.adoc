@@ -86,6 +86,20 @@ subsequent stages have a dependency on the previous stage build configuration.
     }
 ----
 
+The VCS root settings for a stage build configuration can be changed from the default settings using the `vcs`
+configuration block.
+
+[source,kotlin]
+----
+            stage("Stage") {
+                vcs {
+                    showDependenciesChanges = false
+                    excludeDefaultBranchChanges = true
+                    buildDefaultBranch = false
+                }
+            }
+----
+
 The `deploy` configuration creates a build configuration with the `Deployment` type with personal builds disallowed
 and a maximum number of running builds set to 1.
 
