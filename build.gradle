@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.github.rodm'
-version = '0.4'
+version = '0.5-SNAPSHOT'
 
 ext {
     def urlName = "${project.version}".endsWith('-SNAPSHOT') ? 'repository.snapshots.url' : 'repository.releases.url'
@@ -55,7 +55,7 @@ test {
 
 jacocoTestReport {
     reports {
-        xml.enabled true
+        xml.enabled = true
     }
 }
 
