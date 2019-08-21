@@ -139,13 +139,63 @@ class Stage(val name: String, private val pipeline: Pipeline) {
     fun dependsOn(stage: Stage) {
         dependencies.add(stage)
     }
+
+    fun matrix(init: Matrix.() -> Unit) : Matrix {
+        return Matrix(this).apply(init)
+    }
 }
 
-class StageBuildType(val stage: Stage) : BuildType() {
+open class StageBuildType(val stage: Stage) : BuildType() {
     fun template(name: String) : Template {
         return stage.template(name)
     }
 }
+
+@TeamCityDsl
+class Matrix(private val stage: Stage) {
+
+    var axes = Axes()
+
+    fun axes(init: Axes.() -> Unit) : Axes {
+        return axes.apply(init)
+    }
+
+    fun build(init: MatrixBuildType.() -> Unit) {
+        val combinations = axes.combinations()
+        combinations.forEach { map ->
+            val buildType = MatrixBuildType(stage, map)
+            buildType.init()
+            buildType.id(buildType.name.toId(""))
+            stage.buildTypes.add(buildType)
+        }
+    }
+}
+
+@TeamCityDsl
+class Axes {
+    val axes = linkedMapOf<String, List<String>>()
+
+    operator fun String.invoke(vararg values: String) {
+        axes.putIfAbsent(this, values.toList())
+    }
+
+    fun combinations() : List<Map<String, String>> {
+        val combinations = listOf(mapOf<String,String>())
+        return when (axes.size) {
+            0 -> emptyList()
+            else -> axes.entries.fold(combinations) { acc, axis ->
+                acc.flatMap { map ->
+                    axis.value.map { value ->
+                        map.toMutableMap().apply { put(axis.key, value) }
+                    }
+                }
+            }.toList()
+        }
+    }
+}
+
+@TeamCityDsl
+class MatrixBuildType(stage: Stage, val axes: Map<String,String>) : StageBuildType(stage)
 
 class DuplicateNameException(message: String) : Exception(message)
 
