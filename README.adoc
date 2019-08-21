@@ -162,6 +162,35 @@ The above can also be written using the `stage(name: String)` extension function
 Templates can be defined within a stage and the `template(name: String)` extension function can be used to lookup
 a template when configuring a `build` or `deploy` build configuration.
 
+Multiple build configurations can be defined using the `matrix` configuration block.
+
+[source, kotlin]
+----
+    pipeline {
+        val artifact = Artifact("producerRules", "consumerRules")
+        stage("Stage1") {
+            matrix {
+                axes {
+                    "OS"("Linux", "Windows", "Mac OS X")
+                }
+                build {
+                    name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
+
+                    val os = axes["OS"] as String
+                    requirements {
+                        matches("os.name", os)
+                    }
+                }
+            }
+        }
+    }
+----
+
+The `matrix` configuration block contains an `axes` block that defines one or more axes followed by a build
+configuration block that can use values from the defined axes. A build configuration is created for each combination
+of values defined when mutlple axes are defined. An `axes` defines a name, in the above example `OS`, with a number of
+values, from the abouve example `Linux`, `Windows` and `Mac OS X`.
+
 Artifacts can be defined using the `Artifact` type. The `producerRules` and `consumerRules` patterns define the
 paths of build output artifacts collected from a producing build and the paths the artifacts are written to for
 a consuming build. More on the patterns can be found in TeamCity documentation,
