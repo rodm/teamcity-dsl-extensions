@@ -20,6 +20,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.Project
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
 class MatrixBuildTest {
@@ -124,5 +125,50 @@ class MatrixBuildTest {
             "BuildMacOsXJdk11")
         val ids = project.buildTypes.map { it.id.toString() }
         assertThat(ids, hasItems(*expectedIds))
+    }
+
+    @Test
+    fun `allow only one axes configuration`() {
+        val exception = assertThrows(Exception::class.java) {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        matrix {
+                            axes {
+                                "OS"("Linux", "Windows", "Mac OS X")
+                            }
+                            axes {
+                                "JDK"("JDK11", "JDK18")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertEquals("only one axes configuration can be defined", exception.message)
+    }
+
+    @Test
+    fun `allow only one matrix build configuration`() {
+        val exception = assertThrows(Exception::class.java) {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        matrix {
+                            axes {
+                                "OS"("Linux", "Windows", "Mac OS X")
+                            }
+                            build {
+                                name = "Build - ${axes["OS"]}"
+                            }
+                            build {
+                                name = "Another build - ${axes["OS"]}"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertEquals("only one matrix build configuration can be defined", exception.message)
     }
 }

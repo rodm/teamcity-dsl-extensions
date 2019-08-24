@@ -155,12 +155,20 @@ open class StageBuildType(val stage: Stage) : BuildType() {
 class Matrix(private val stage: Stage) {
 
     var axes = Axes()
+    var axesDefined = false
+    var buildDefined = false
 
     fun axes(init: Axes.() -> Unit) : Axes {
+        if (axesDefined) throw IllegalStateException("only one axes configuration can be defined")
+        axesDefined = true
+
         return axes.apply(init)
     }
 
     fun build(init: MatrixBuildType.() -> Unit) {
+        if (buildDefined) throw IllegalStateException("only one matrix build configuration can be defined")
+        buildDefined = true
+
         val combinations = axes.combinations()
         combinations.forEach { map ->
             val buildType = MatrixBuildType(stage, map)
