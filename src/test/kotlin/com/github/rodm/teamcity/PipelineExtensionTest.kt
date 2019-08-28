@@ -479,7 +479,7 @@ class PipelineExtensionTest {
         val stageBuild = project.findBuildByName("Stage: Stage1")
         assertEquals(true, stageBuild?.vcs?.showDependenciesChanges)
         assertEquals(false, stageBuild?.vcs?.excludeDefaultBranchChanges)
-        assertEquals(true, stageBuild?.vcs?.buildDefaultBranch)
+        assertEquals("+:*", stageBuild?.vcs?.branchFilter)
     }
 
     @Test
@@ -490,7 +490,7 @@ class PipelineExtensionTest {
                     vcs {
                         showDependenciesChanges = false
                         excludeDefaultBranchChanges = true
-                        buildDefaultBranch = false
+                        branchFilter = "+:master"
                     }
                 }
             }
@@ -499,7 +499,7 @@ class PipelineExtensionTest {
         val stageBuild = project.findBuildByName("Stage: Stage1")
         assertEquals(false, stageBuild?.vcs?.showDependenciesChanges)
         assertEquals(true, stageBuild?.vcs?.excludeDefaultBranchChanges)
-        assertEquals(false, stageBuild?.vcs?.buildDefaultBranch)
+        assertEquals("+:master", stageBuild?.vcs?.branchFilter)
     }
 
     @Test
