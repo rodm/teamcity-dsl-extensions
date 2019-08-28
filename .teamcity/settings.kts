@@ -9,7 +9,7 @@ import jetbrains.buildServer.configs.kotlin.v2018_2.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2018_2.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2018_2.version
 
-version = "2018.2"
+version = "2019.1"
 
 project {
 
@@ -77,8 +77,8 @@ project {
         stage ("Build") {
             build {
                 templates(buildTemplate)
-                id("BuildTeamCity20181")
-                name = "Build - TeamCity 2018.1"
+                id("BuildTeamCity")
+                name = "Build - TeamCity 2019.1"
 
                 params {
                     param("gradle.opts", serverUrl)
