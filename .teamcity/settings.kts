@@ -111,6 +111,7 @@ project {
                     vcs {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = ""
+                        triggerRules = "-:.teamcity/**"
                     }
                 }
             }
@@ -128,6 +129,7 @@ project {
                     vcs {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = "+:v*"
+                        triggerRules = "-:.teamcity/**"
                     }
                 }
             }
