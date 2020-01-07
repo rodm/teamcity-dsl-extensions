@@ -16,15 +16,15 @@
 
 package com.github.rodm.teamcity
 
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.DEPLOYMENT
-import jetbrains.buildServer.configs.kotlin.v2018_2.Project
-import jetbrains.buildServer.configs.kotlin.v2018_2.copyTo
-import jetbrains.buildServer.configs.kotlin.v2018_2.TeamCityDsl
-import jetbrains.buildServer.configs.kotlin.v2018_2.Template
-import jetbrains.buildServer.configs.kotlin.v2018_2.VcsSettings
-import jetbrains.buildServer.configs.kotlin.v2018_2.toId
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.COMPOSITE
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.DEPLOYMENT
+import jetbrains.buildServer.configs.kotlin.v2019_2.Project
+import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
+import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.v2019_2.Template
+import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
+import jetbrains.buildServer.configs.kotlin.v2019_2.toId
 
 lateinit var pipeline: Pipeline
 

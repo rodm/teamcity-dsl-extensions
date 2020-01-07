@@ -16,10 +16,10 @@
 
 package com.github.rodm.teamcity
 
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.COMPOSITE
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildTypeSettings.Type.REGULAR
-import jetbrains.buildServer.configs.kotlin.v2018_2.Project
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.COMPOSITE
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.REGULAR
+import jetbrains.buildServer.configs.kotlin.v2019_2.Project
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test

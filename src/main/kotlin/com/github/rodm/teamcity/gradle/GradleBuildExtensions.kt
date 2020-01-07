@@ -16,14 +16,14 @@
 
 package com.github.rodm.teamcity.gradle
 
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildFeature
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildFeatures
-import jetbrains.buildServer.configs.kotlin.v2018_2.ErrorConsumer
-import jetbrains.buildServer.configs.kotlin.v2018_2.BuildSteps
-import jetbrains.buildServer.configs.kotlin.v2018_2.Project
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2018_2.Template
-import jetbrains.buildServer.configs.kotlin.v2018_2.buildSteps.gradle
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildFeature
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildFeatures
+import jetbrains.buildServer.configs.kotlin.v2019_2.ErrorConsumer
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildSteps
+import jetbrains.buildServer.configs.kotlin.v2019_2.Project
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2019_2.Template
+import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.gradle
 
 class GradleInitScript() : BuildFeature() {
 
