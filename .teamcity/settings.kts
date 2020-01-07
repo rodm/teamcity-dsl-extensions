@@ -78,7 +78,7 @@ project {
             build {
                 templates(buildTemplate)
                 id("BuildTeamCity")
-                name = "Build - TeamCity 2019.1"
+                name = "Build - DSL Library"
 
                 params {
                     param("gradle.opts", serverUrl)
