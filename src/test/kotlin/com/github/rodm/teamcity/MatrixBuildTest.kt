@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,6 +16,7 @@
 
 package com.github.rodm.teamcity
 
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.hasItems
@@ -170,5 +171,38 @@ class MatrixBuildTest {
             }
         }
         assertEquals("only one matrix build configuration can be defined", exception.message)
+    }
+
+    @Test
+    fun `apply default stage settings to matrix builds`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    defaults {
+                        failureConditions {
+                            executionTimeoutMin = 15
+                        }
+                    }
+                    matrix {
+                        axes {
+                            "OS"("Linux", "Windows", "Mac OS X")
+                            "JDK"("JDK_18", "JDK_11")
+                        }
+                        build {
+                            name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
+                        }
+                    }
+                }
+            }
+        }
+
+        val linuxJava11Build = project.findBuildByName("Build - Linux - JDK_11")
+        assertEquals(15, linuxJava11Build?.failureConditions?.executionTimeoutMin)
+        val windowsJava8Build = project.findBuildByName("Build - Windows - JDK_18")
+        assertEquals(15, windowsJava8Build?.failureConditions?.executionTimeoutMin)
+    }
+
+    private fun Project.findBuildByName(name: String) : BuildType? {
+        return buildTypes.find { build -> build.name == name }
     }
 }
