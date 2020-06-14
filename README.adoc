@@ -172,6 +172,7 @@ Multiple build configurations can be defined using the `matrix` configuration bl
             matrix {
                 axes {
                     "OS"("Linux", "Windows", "Mac OS X")
+                    "JDK"("JDK_18", "JDK_11")
                 }
                 build {
                     name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
@@ -179,6 +180,10 @@ Multiple build configurations can be defined using the `matrix` configuration bl
                     val os = axes["OS"] as String
                     requirements {
                         matches("os.name", os)
+                    }
+                    val jdk = axes["JDK"] as String
+                    params {
+                        param("java.home", "%${jdk}%")
                     }
                 }
             }
@@ -188,8 +193,9 @@ Multiple build configurations can be defined using the `matrix` configuration bl
 
 The `matrix` configuration block contains an `axes` block that defines one or more axes followed by a build
 configuration block that can use values from the defined axes. A build configuration is created for each combination
-of values defined when mutlple axes are defined. An `axes` defines a name, in the above example `OS`, with a number of
-values, from the abouve example `Linux`, `Windows` and `Mac OS X`.
+of values defined when multiple axes are defined. An `axes` defines a name, in the above example `OS` and `JDK`, with
+a number of values, from the above example `Linux`, `Windows` and `Mac OS X` for `OS` and `JDK_18` and `JDK_11` for
+`JDK`. The example will create 6 build configurations, one for each combination of `OS` and `JDK`.
 
 Artifacts can be defined using the `Artifact` type. The `producerRules` and `consumerRules` patterns define the
 paths of build output artifacts collected from a producing build and the paths the artifacts are written to for
