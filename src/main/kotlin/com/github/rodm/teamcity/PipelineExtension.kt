@@ -157,6 +157,7 @@ class Matrix(private val stage: Stage) {
     var axes = Axes()
     var axesDefined = false
     var buildDefined = false
+    private val excludes = mutableListOf<Map<String, String>>()
 
     fun axes(init: Axes.() -> Unit) : Axes {
         if (axesDefined) throw IllegalStateException("only one axes configuration can be defined")
@@ -165,18 +166,36 @@ class Matrix(private val stage: Stage) {
         return axes.apply(init)
     }
 
+    fun excludes(init: () -> Unit ) {
+        init()
+    }
+
+    fun exclude(vararg pairs: Pair<String, String>) {
+        excludes.add(pairs.toMap())
+    }
+
     fun build(init: MatrixBuildType.() -> Unit) {
         if (buildDefined) throw IllegalStateException("only one matrix build configuration can be defined")
         buildDefined = true
 
         val combinations = axes.combinations()
-        combinations.forEach { map ->
-            val buildType = MatrixBuildType(stage, map)
+        combinations.filter { combination ->
+            include(combination)
+        }.forEach { combination ->
+            val buildType = MatrixBuildType(stage, combination)
             stage.defaults.copyTo(buildType)
             buildType.init()
             buildType.id(buildType.name.toId(""))
             stage.buildTypes.add(buildType)
         }
+    }
+
+    private fun include(combination: Map<String, String>) : Boolean {
+        return !excludes.any { exclusion -> combination.containsMap(exclusion) }
+    }
+
+    private fun Map<String, String>.containsMap(map: Map<String, String>) : Boolean {
+        return map.all { entry -> entry.value == get(entry.key) }
     }
 }
 

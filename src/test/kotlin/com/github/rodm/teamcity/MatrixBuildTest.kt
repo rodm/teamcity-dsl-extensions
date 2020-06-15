@@ -202,6 +202,87 @@ class MatrixBuildTest {
         assertEquals(15, windowsJava8Build?.failureConditions?.executionTimeoutMin)
     }
 
+    @Test
+    fun `matrix build excluding specific combinations`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    matrix {
+                        axes {
+                            "OS"("Linux", "Windows", "Mac OS X")
+                            "JDK"("JDK_18", "JDK_11")
+                        }
+                        excludes {
+                            exclude("OS" to "Windows", "JDK" to "JDK_18")
+                            exclude("OS" to "Mac OS X", "JDK" to "JDK_11")
+                        }
+                        build {
+                            name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
+                        }
+                    }
+                }
+            }
+        }
+
+        assertEquals(5, project.buildTypes.size) // includes stage build type
+
+        val expectedNames = arrayOf(
+            "Build - Linux - JDK_18",
+            "Build - Linux - JDK_11",
+            "Build - Windows - JDK_11",
+            "Build - Mac OS X - JDK_18")
+        val names = project.buildTypes.map { it.name }
+        assertThat(names, hasItems(*expectedNames))
+
+        val expectedIds = arrayOf(
+            "BuildLinuxJdk18",
+            "BuildLinuxJdk11",
+            "BuildWindowsJdk11",
+            "BuildMacOsXJdk18")
+        val ids = project.buildTypes.map { it.id.toString() }
+        assertThat(ids, hasItems(*expectedIds))
+    }
+
+    @Test
+    fun `matrix build excluding combinations`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    matrix {
+                        axes {
+                            "OS"("Linux", "Windows", "Mac OS X")
+                            "JDK"("JDK_18", "JDK_11")
+                        }
+                        excludes {
+                            exclude("OS" to "Windows")
+                        }
+                        build {
+                            name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
+                        }
+                    }
+                }
+            }
+        }
+
+        assertEquals(5, project.buildTypes.size) // includes stage build type
+
+        val expectedNames = arrayOf(
+            "Build - Linux - JDK_18",
+            "Build - Linux - JDK_11",
+            "Build - Mac OS X - JDK_11",
+            "Build - Mac OS X - JDK_18")
+        val names = project.buildTypes.map { it.name }
+        assertThat(names, hasItems(*expectedNames))
+
+        val expectedIds = arrayOf(
+            "BuildLinuxJdk18",
+            "BuildLinuxJdk11",
+            "BuildMacOsXJdk11",
+            "BuildMacOsXJdk18")
+        val ids = project.buildTypes.map { it.id.toString() }
+        assertThat(ids, hasItems(*expectedIds))
+    }
+
     private fun Project.findBuildByName(name: String) : BuildType? {
         return buildTypes.find { build -> build.name == name }
     }
