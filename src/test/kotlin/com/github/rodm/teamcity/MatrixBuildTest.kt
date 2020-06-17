@@ -283,6 +283,48 @@ class MatrixBuildTest {
         assertThat(ids, hasItems(*expectedIds))
     }
 
+    @Test
+    fun `reject invalid name in excludes`() {
+        val exception = assertThrows(Exception::class.java) {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        matrix {
+                            axes {
+                                "OS"("Linux", "Windows", "Mac OS X")
+                            }
+                            excludes {
+                                exclude("JDK" to "JDK_11")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertEquals("Invalid name: JDK", exception.message)
+    }
+
+    @Test
+    fun `reject invalid value in excludes`() {
+        val exception = assertThrows(Exception::class.java) {
+            Project {
+                pipeline {
+                    stage("Stage1") {
+                        matrix {
+                            axes {
+                                "OS"("Linux", "Windows", "Mac OS X")
+                            }
+                            excludes {
+                                exclude("OS" to "Unix")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        assertEquals("Invalid value: Unix", exception.message)
+    }
+
     private fun Project.findBuildByName(name: String) : BuildType? {
         return buildTypes.find { build -> build.name == name }
     }

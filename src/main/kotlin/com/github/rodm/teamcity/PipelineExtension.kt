@@ -157,7 +157,7 @@ class Matrix(private val stage: Stage) {
     var axes = Axes()
     var axesDefined = false
     var buildDefined = false
-    private val excludes = Excludes()
+    private val excludes = Excludes(axes)
 
     fun axes(init: Axes.() -> Unit) : Axes {
         if (axesDefined) throw IllegalStateException("only one axes configuration can be defined")
@@ -219,10 +219,18 @@ class Axes {
 }
 
 @TeamCityDsl
-class Excludes {
+class Excludes(private val axes: Axes) {
     val excludes = mutableListOf<Map<String, String>>()
 
     fun exclude(vararg pairs: Pair<String, String>) {
+        pairs.forEach { pair ->
+            if (!axes.axes.containsKey(pair.first)) {
+                throw IllegalArgumentException("Invalid name: ${pair.first}")
+            }
+            if (!(axes.axes.get(pair.first)?.contains(pair.second))!!) {
+                throw IllegalArgumentException("Invalid value: ${pair.second}")
+            }
+        }
         excludes.add(pairs.toMap())
     }
 }
