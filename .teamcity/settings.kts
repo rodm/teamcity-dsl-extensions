@@ -122,7 +122,7 @@ project {
 
                 params {
                     param("gradle.opts", "${serverUrl} %bintray.opts%")
-                    param("gradle.tasks", "clean build bintrayUpload")
+                    param("gradle.tasks", "clean build bintrayPublish")
                 }
 
                 triggers {
