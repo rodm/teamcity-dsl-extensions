@@ -16,6 +16,7 @@
 
 package com.github.rodm.teamcity
 
+import com.github.rodm.teamcity.internal.DefaultMatrix
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.DEPLOYMENT
@@ -141,7 +142,7 @@ class Stage(val name: String, private val pipeline: Pipeline) {
     }
 
     fun matrix(init: Matrix.() -> Unit) : Matrix {
-        return Matrix(this).apply(init)
+        return DefaultMatrix(this).apply(init)
     }
 }
 
@@ -152,87 +153,20 @@ open class StageBuildType(val stage: Stage) : BuildType() {
 }
 
 @TeamCityDsl
-class Matrix(private val stage: Stage) {
-
-    var axes = Axes()
-    var axesDefined = false
-    var buildDefined = false
-    private val excludes = Excludes(axes)
-
-    fun axes(init: Axes.() -> Unit) : Axes {
-        if (axesDefined) throw IllegalStateException("only one axes configuration can be defined")
-        axesDefined = true
-
-        return axes.apply(init)
-    }
-
-    fun excludes(init: Excludes.() -> Unit ) {
-        excludes.apply(init)
-    }
-
-    fun build(init: MatrixBuildType.() -> Unit) {
-        if (buildDefined) throw IllegalStateException("only one matrix build configuration can be defined")
-        buildDefined = true
-
-        val combinations = axes.combinations()
-        combinations.filter { combination ->
-            include(combination)
-        }.forEach { combination ->
-            val buildType = MatrixBuildType(stage, combination)
-            stage.defaults.copyTo(buildType)
-            buildType.init()
-            buildType.id(buildType.name.toId(""))
-            stage.buildTypes.add(buildType)
-        }
-    }
-
-    private fun include(combination: Map<String, String>) : Boolean {
-        return !excludes.excludes.any { exclusion -> combination.containsMap(exclusion) }
-    }
-
-    private fun Map<String, String>.containsMap(map: Map<String, String>) : Boolean {
-        return map.all { entry -> entry.value == get(entry.key) }
-    }
+interface Matrix {
+    fun axes(init: Axes.() -> Unit) : Axes
+    fun excludes(init: Excludes.() -> Unit)
+    fun build(init: MatrixBuildType.() -> Unit)
 }
 
 @TeamCityDsl
-class Axes {
-    val axes = linkedMapOf<String, List<String>>()
-
-    operator fun String.invoke(vararg values: String) {
-        axes.putIfAbsent(this, values.toList())
-    }
-
-    fun combinations() : List<Map<String, String>> {
-        val combinations = listOf(mapOf<String,String>())
-        return when (axes.size) {
-            0 -> emptyList()
-            else -> axes.entries.fold(combinations) { acc, axis ->
-                acc.flatMap { map ->
-                    axis.value.map { value ->
-                        map.toMutableMap().apply { put(axis.key, value) }
-                    }
-                }
-            }.toList()
-        }
-    }
+interface Axes {
+    operator fun String.invoke(vararg values: String)
 }
 
 @TeamCityDsl
-class Excludes(private val axes: Axes) {
-    val excludes = mutableListOf<Map<String, String>>()
-
-    fun exclude(vararg pairs: Pair<String, String>) {
-        pairs.forEach { pair ->
-            if (!axes.axes.containsKey(pair.first)) {
-                throw IllegalArgumentException("Invalid name: ${pair.first}")
-            }
-            if (!(axes.axes.get(pair.first)?.contains(pair.second))!!) {
-                throw IllegalArgumentException("Invalid value: ${pair.second}")
-            }
-        }
-        excludes.add(pairs.toMap())
-    }
+interface Excludes {
+    fun exclude(vararg pairs: Pair<String, String>)
 }
 
 @TeamCityDsl

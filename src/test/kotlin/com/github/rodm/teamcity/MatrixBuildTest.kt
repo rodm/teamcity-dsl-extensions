@@ -16,6 +16,7 @@
 
 package com.github.rodm.teamcity
 
+import com.github.rodm.teamcity.internal.DefaultAxes
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
 import org.hamcrest.MatcherAssert.assertThat
@@ -28,14 +29,14 @@ class MatrixBuildTest {
 
     @Test
     fun `no axes defined`() {
-        val axes = Axes()
+        val axes = DefaultAxes()
         val combinations = axes.combinations()
         assertEquals(listOf<Map<String,String>>(), combinations)
     }
 
     @Test
     fun `single axes with single value`() {
-        val axes = Axes()
+        val axes = DefaultAxes()
         axes.apply {
             "A"("B")
         }
@@ -46,7 +47,7 @@ class MatrixBuildTest {
 
     @Test
     fun `multiple axes with multiple values`() {
-        val axes = Axes()
+        val axes = DefaultAxes()
         axes.apply {
             "A"("B", "C")
             "X"("Y", "Z")
