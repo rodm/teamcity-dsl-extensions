@@ -27,7 +27,6 @@ import com.github.rodm.teamcity.Pipeline
 import com.github.rodm.teamcity.StageBuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings
-import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
 import jetbrains.buildServer.configs.kotlin.v2019_2.Template
 import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
@@ -42,7 +41,7 @@ class DefaultPipeline : Pipeline {
         names.add(name)
 
         val stage = DefaultStage(name, this).apply(init)
-        if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
+        if (stage.dependencies.isEmpty() && stages.isNotEmpty()) stage.dependsOn(stages.last())
 
         val stageDependencies = stage.dependencies
         stage.buildType.apply {
@@ -67,7 +66,6 @@ class DefaultPipeline : Pipeline {
     }
 }
 
-@TeamCityDsl
 class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : Stage {
     val buildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
@@ -80,7 +78,7 @@ class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : St
 
     init {
         buildType.id(name.toId("Stage_"))
-        buildType.name = "Stage: ${name}"
+        buildType.name = "Stage: $name"
         buildType.type =
             BuildTypeSettings.Type.COMPOSITE
         buildType.vcs {
@@ -209,7 +207,7 @@ class DefaultExcludes(private val axes: DefaultAxes) : Excludes {
             if (!axes.axes.containsKey(pair.first)) {
                 throw IllegalArgumentException("Invalid name: ${pair.first}")
             }
-            if (!(axes.axes.get(pair.first)?.contains(pair.second))!!) {
+            if (!(axes.axes[pair.first]?.contains(pair.second))!!) {
                 throw IllegalArgumentException("Invalid value: ${pair.second}")
             }
         }

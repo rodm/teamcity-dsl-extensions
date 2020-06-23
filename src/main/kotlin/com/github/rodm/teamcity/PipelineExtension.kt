@@ -60,7 +60,7 @@ interface Stage {
     fun matrix(init: Matrix.() -> Unit) : Matrix
 }
 
-open class StageBuildType(val stage: Stage) : BuildType() {
+open class StageBuildType(private val stage: Stage) : BuildType() {
     fun template(name: String) : Template {
         return stage.template(name)
     }
