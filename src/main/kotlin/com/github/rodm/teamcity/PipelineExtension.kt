@@ -16,16 +16,12 @@
 
 package com.github.rodm.teamcity
 
-import com.github.rodm.teamcity.internal.DefaultMatrix
+import com.github.rodm.teamcity.internal.DefaultStage
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.COMPOSITE
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.DEPLOYMENT
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
-import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
 import jetbrains.buildServer.configs.kotlin.v2019_2.Template
 import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
-import jetbrains.buildServer.configs.kotlin.v2019_2.toId
 
 lateinit var pipeline: Pipeline
 
@@ -46,14 +42,14 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
 
 @TeamCityDsl
 class Pipeline {
-    val stages = arrayListOf<Stage>()
+    val stages = arrayListOf<DefaultStage>()
     private val names = mutableSetOf<String>()
 
     fun stage(name: String, init: Stage.() -> Unit) : Stage {
         if (names.contains(name)) throw DuplicateNameException("Stage name '${name}' already exists")
         names.add(name)
 
-        val stage = Stage(name, this).apply(init)
+        val stage = DefaultStage(name, this).apply(init)
         if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
 
         val stageDependencies = stage.dependencies
@@ -80,70 +76,17 @@ class Pipeline {
 }
 
 @TeamCityDsl
-class Stage(val name: String, private val pipeline: Pipeline) {
-    val buildType: BuildType = BuildType()
-    val buildTypes = arrayListOf<BuildType>()
-    var defaults = BuildType()
-    val dependencies = arrayListOf<Stage>()
-    val templates = arrayListOf<Template>()
+interface Stage {
     var description: String
-        get() = buildType.description
-        set(value) { buildType.description = value }
-
-    init {
-        buildType.id(name.toId("Stage_"))
-        buildType.name = "Stage: ${name}"
-        buildType.type = COMPOSITE
-        buildType.vcs {
-            showDependenciesChanges = true
-        }
-    }
-
-    fun vcs(init: VcsSettings.() -> Unit) {
-        buildType.vcs.apply(init)
-    }
-
-    fun template(init: Template.() -> Unit) : Template {
-        val template = Template().apply(init)
-        templates.add(template)
-        return template
-    }
-
-    fun defaults(init: BuildType.() -> Unit) {
-        defaults = BuildType().apply(init)
-    }
-
-    fun build(init: StageBuildType.() -> Unit) {
-        val buildType = StageBuildType(this)
-        defaults.copyTo(buildType)
-        buildType.init()
-        buildTypes.add(buildType)
-    }
-
-    fun deploy(init: StageBuildType.() -> Unit) {
-        val buildType = StageBuildType(this)
-        buildType.enablePersonalBuilds = false
-        buildType.maxRunningBuilds = 1
-        buildType.init()
-        buildType.type = DEPLOYMENT
-        buildTypes.add(buildType)
-    }
-
-    fun stage(name: String) : Stage {
-        return pipeline.stage(name)
-    }
-
-    fun template(name: String) : Template {
-        return templates.find { it.name == name } ?: throw NameNotFoundException("Template '${name}' not found")
-    }
-
-    fun dependsOn(stage: Stage) {
-        dependencies.add(stage)
-    }
-
-    fun matrix(init: Matrix.() -> Unit) : Matrix {
-        return DefaultMatrix(this).apply(init)
-    }
+    fun vcs(init: VcsSettings.() -> Unit)
+    fun template(init: Template.() -> Unit) : Template
+    fun defaults(init: BuildType.() -> Unit)
+    fun build(init: StageBuildType.() -> Unit)
+    fun deploy(init: StageBuildType.() -> Unit)
+    fun stage(name: String) : Stage
+    fun template(name: String) : Template
+    fun dependsOn(stage: Stage)
+    fun matrix(init: Matrix.() -> Unit) : Matrix
 }
 
 open class StageBuildType(val stage: Stage) : BuildType() {

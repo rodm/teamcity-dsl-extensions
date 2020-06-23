@@ -18,13 +18,91 @@ package com.github.rodm.teamcity.internal
 
 import com.github.rodm.teamcity.Axes
 import com.github.rodm.teamcity.Excludes
+import com.github.rodm.teamcity.Stage
 import com.github.rodm.teamcity.Matrix
 import com.github.rodm.teamcity.MatrixBuildType
-import com.github.rodm.teamcity.Stage
+import com.github.rodm.teamcity.NameNotFoundException
+import com.github.rodm.teamcity.Pipeline
+import com.github.rodm.teamcity.StageBuildType
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
+import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings
+import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.v2019_2.Template
+import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2019_2.toId
 
-class DefaultMatrix(private val stage: Stage) : Matrix {
+@TeamCityDsl
+class DefaultStage(val name: String, private val pipeline: Pipeline) : Stage {
+    val buildType = BuildType()
+    val buildTypes = arrayListOf<BuildType>()
+    var defaults = BuildType()
+    val dependencies = arrayListOf<DefaultStage>()
+    val templates = arrayListOf<Template>()
+    override var description: String
+        get() = buildType.description
+        set(value) { buildType.description = value }
+
+    init {
+        buildType.id(name.toId("Stage_"))
+        buildType.name = "Stage: ${name}"
+        buildType.type =
+            BuildTypeSettings.Type.COMPOSITE
+        buildType.vcs {
+            showDependenciesChanges = true
+        }
+    }
+
+    override fun vcs(init: VcsSettings.() -> Unit) {
+        buildType.vcs.apply(init)
+    }
+
+    override fun template(init: Template.() -> Unit) : Template {
+        val template = Template().apply(init)
+        templates.add(template)
+        return template
+    }
+
+    override fun defaults(init: BuildType.() -> Unit) {
+        defaults = BuildType().apply(init)
+    }
+
+    override fun build(init: StageBuildType.() -> Unit) {
+        val buildType = StageBuildType(this)
+        defaults.copyTo(buildType)
+        buildType.init()
+        buildTypes.add(buildType)
+    }
+
+    override fun deploy(init: StageBuildType.() -> Unit) {
+        val buildType = StageBuildType(this)
+        buildType.enablePersonalBuilds = false
+        buildType.maxRunningBuilds = 1
+        buildType.init()
+        buildType.type = BuildTypeSettings.Type.DEPLOYMENT
+        buildTypes.add(buildType)
+    }
+
+    override fun stage(name: String) : Stage {
+        return pipeline.stage(name)
+    }
+
+    override fun template(name: String) : Template {
+        return templates.find { it.name == name } ?: throw NameNotFoundException(
+            "Template '${name}' not found"
+        )
+    }
+
+    override fun dependsOn(stage: Stage) {
+        if (stage is DefaultStage) dependencies.add(stage)
+    }
+
+    override fun matrix(init: Matrix.() -> Unit) : Matrix {
+        return DefaultMatrix(this).apply(init)
+    }
+}
+
+class DefaultMatrix(private val stage: DefaultStage) : Matrix {
     private var axes = DefaultAxes()
     private var axesDefined = false
     private var buildDefined = false
