@@ -16,17 +16,17 @@
 
 package com.github.rodm.teamcity
 
-import com.github.rodm.teamcity.internal.DefaultStage
+import com.github.rodm.teamcity.internal.DefaultPipeline
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
 import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
 import jetbrains.buildServer.configs.kotlin.v2019_2.Template
 import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 
-lateinit var pipeline: Pipeline
+lateinit var pipeline: DefaultPipeline
 
 fun Project.pipeline(init: Pipeline.() -> Unit) {
-    pipeline = Pipeline().apply(init)
+    pipeline = DefaultPipeline().apply(init)
 
     pipeline.stages.forEach { stage ->
         stage.templates.forEach { template ->
@@ -41,38 +41,9 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
 }
 
 @TeamCityDsl
-class Pipeline {
-    val stages = arrayListOf<DefaultStage>()
-    private val names = mutableSetOf<String>()
-
-    fun stage(name: String, init: Stage.() -> Unit) : Stage {
-        if (names.contains(name)) throw DuplicateNameException("Stage name '${name}' already exists")
-        names.add(name)
-
-        val stage = DefaultStage(name, this).apply(init)
-        if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
-
-        val stageDependencies = stage.dependencies
-        stage.buildType.apply {
-            dependencies {
-                stage.buildTypes.forEach { build ->
-                    snapshot(build) {}
-                    stageDependencies.forEach { stageDependency ->
-                        build.dependencies.snapshot(stageDependency.buildType) {}
-                    }
-                }
-                stageDependencies.forEach { stageDependency ->
-                    snapshot(stageDependency.buildType) {}
-                }
-            }
-        }
-        stages.add(stage)
-        return stage
-    }
-
-    fun stage(name: String) : Stage {
-        return stages.find { stage -> stage.name == name } ?: throw NameNotFoundException("Stage '$name' not found")
-    }
+interface Pipeline {
+    fun stage(name: String, init: Stage.() -> Unit) : Stage
+    fun stage(name: String) : Stage
 }
 
 @TeamCityDsl

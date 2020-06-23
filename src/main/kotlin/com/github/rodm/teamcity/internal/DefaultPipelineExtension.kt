@@ -22,6 +22,7 @@ import com.github.rodm.teamcity.Stage
 import com.github.rodm.teamcity.Matrix
 import com.github.rodm.teamcity.MatrixBuildType
 import com.github.rodm.teamcity.NameNotFoundException
+import com.github.rodm.teamcity.DuplicateNameException
 import com.github.rodm.teamcity.Pipeline
 import com.github.rodm.teamcity.StageBuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
@@ -32,8 +33,42 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
 import jetbrains.buildServer.configs.kotlin.v2019_2.toId
 
+class DefaultPipeline : Pipeline {
+    val stages = arrayListOf<DefaultStage>()
+    private val names = mutableSetOf<String>()
+
+    override fun stage(name: String, init: Stage.() -> Unit) : Stage {
+        if (names.contains(name)) throw DuplicateNameException("Stage name '${name}' already exists")
+        names.add(name)
+
+        val stage = DefaultStage(name, this).apply(init)
+        if (stage.dependencies.isEmpty() && !stages.isEmpty()) stage.dependsOn(stages.last())
+
+        val stageDependencies = stage.dependencies
+        stage.buildType.apply {
+            dependencies {
+                stage.buildTypes.forEach { build ->
+                    snapshot(build) {}
+                    stageDependencies.forEach { stageDependency ->
+                        build.dependencies.snapshot(stageDependency.buildType) {}
+                    }
+                }
+                stageDependencies.forEach { stageDependency ->
+                    snapshot(stageDependency.buildType) {}
+                }
+            }
+        }
+        stages.add(stage)
+        return stage
+    }
+
+    override fun stage(name: String) : Stage {
+        return stages.find { stage -> stage.name == name } ?: throw NameNotFoundException("Stage '$name' not found")
+    }
+}
+
 @TeamCityDsl
-class DefaultStage(val name: String, private val pipeline: Pipeline) : Stage {
+class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : Stage {
     val buildType = BuildType()
     val buildTypes = arrayListOf<BuildType>()
     var defaults = BuildType()
