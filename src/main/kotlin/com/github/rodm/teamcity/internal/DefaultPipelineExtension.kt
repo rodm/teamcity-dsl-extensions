@@ -126,6 +126,12 @@ class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : St
         )
     }
 
+    override fun build(name: String) : BuildType {
+        return buildTypes.find { it.name == name } ?: throw NameNotFoundException(
+            "Build '${name}' not found"
+        )
+    }
+
     override fun dependsOn(stage: Stage) {
         if (stage is DefaultStage) dependencies.add(stage)
     }

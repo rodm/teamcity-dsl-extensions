@@ -56,13 +56,24 @@ interface Stage {
     fun deploy(init: StageBuildType.() -> Unit)
     fun stage(name: String) : Stage
     fun template(name: String) : Template
+    fun build(name: String) : BuildType
     fun dependsOn(stage: Stage)
     fun matrix(init: Matrix.() -> Unit) : Matrix
 }
 
 open class StageBuildType(private val stage: Stage) : BuildType() {
+    fun dependsOn(build: BuildType) {
+        dependencies {
+            snapshot(build) {}
+        }
+    }
+
     fun template(name: String) : Template {
         return stage.template(name)
+    }
+
+    fun build(name: String) : BuildType {
+        return stage.build(name)
     }
 }
 

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -177,6 +177,28 @@ class PipelineExtensionTest {
         }
 
         val dependencies = project.findBuildByName("Stage: Stage1")?.dependencies?.items
+        assertEquals(1, dependencies?.size)
+        val dependencyBuild = dependencies?.get(0)?.buildTypeId as BuildType
+        assertEquals("Build1", dependencyBuild.name)
+    }
+
+    @Test
+    fun `build depends on another build within a stage`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    build {
+                        name = "Build1"
+                    }
+                    build {
+                        name = "Build2"
+                        dependsOn(build("Build1"))
+                    }
+                }
+            }
+        }
+
+        val dependencies = project.findBuildByName("Build2")?.dependencies?.items
         assertEquals(1, dependencies?.size)
         val dependencyBuild = dependencies?.get(0)?.buildTypeId as BuildType
         assertEquals("Build1", dependencyBuild.name)
