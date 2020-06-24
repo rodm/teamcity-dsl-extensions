@@ -46,6 +46,10 @@ dependencies {
     testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
 }
 
+java {
+    withSourcesJar()
+}
+
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
