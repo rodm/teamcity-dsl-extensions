@@ -23,10 +23,8 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
 import jetbrains.buildServer.configs.kotlin.v2019_2.Template
 import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 
-lateinit var pipeline: DefaultPipeline
-
-fun Project.pipeline(init: Pipeline.() -> Unit) {
-    pipeline = DefaultPipeline().apply(init)
+fun Project.pipeline(init: Pipeline.() -> Unit) : Pipeline {
+    val pipeline = DefaultPipeline().apply(init)
 
     pipeline.stages.forEach { stage ->
         stage.templates.forEach { template ->
@@ -38,6 +36,7 @@ fun Project.pipeline(init: Pipeline.() -> Unit) {
         }
     }
     buildTypesOrder = buildTypes.toList()
+    return pipeline
 }
 
 @TeamCityDsl

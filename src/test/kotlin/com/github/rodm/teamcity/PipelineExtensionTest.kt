@@ -16,6 +16,7 @@
 
 package com.github.rodm.teamcity
 
+import com.github.rodm.teamcity.internal.DefaultPipeline
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.COMPOSITE
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings.Type.REGULAR
@@ -27,11 +28,15 @@ import org.junit.jupiter.api.assertThrows
 
 class PipelineExtensionTest {
 
+    private lateinit var pipeline: DefaultPipeline
+
+    private fun pipeline(init: Pipeline.() -> Unit) {
+        pipeline =  Project().pipeline(init) as DefaultPipeline
+    }
+
     @Test
     fun `define a build pipeline for a project`() {
-        Project {
-            pipeline {
-            }
+        pipeline {
         }
 
         assertNotNull(pipeline)
@@ -39,10 +44,8 @@ class PipelineExtensionTest {
 
     @Test
     fun `build pipeline contains a named stage`() {
-        Project {
-            pipeline {
-                stage ("Build") {
-                }
+        pipeline {
+            stage ("Build") {
             }
         }
 
@@ -52,12 +55,10 @@ class PipelineExtensionTest {
 
     @Test
     fun `build pipeline contains multiple named stages`() {
-        Project {
-            pipeline {
-                stage ("Build") {
-                }
-                stage ("Test") {
-                }
+        pipeline {
+            stage ("Build") {
+            }
+            stage ("Test") {
             }
         }
 
@@ -67,10 +68,8 @@ class PipelineExtensionTest {
 
     @Test
     fun `stage has a named composite build configuration`() {
-        Project {
-            pipeline {
-                stage("Build") {
-                }
+        pipeline {
+            stage("Build") {
             }
         }
 
@@ -82,18 +81,14 @@ class PipelineExtensionTest {
 
     @Test
     fun `stage can have a description`() {
-        Project {
-            Project {
-                pipeline {
-                    stage("Build") {
-                        description = "Build stage description"
-                    }
-                }
+        pipeline {
+            stage("Build") {
+                description = "Build stage description"
             }
-
-            val stage = pipeline.stages[0]
-            assertEquals("Build stage description", stage.buildType.description)
         }
+
+        val stage = pipeline.stages[0]
+        assertEquals("Build stage description", stage.buildType.description)
     }
 
     @Test
