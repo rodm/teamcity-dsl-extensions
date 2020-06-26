@@ -371,8 +371,4 @@ class PipelineExtensionTest {
         assertEquals(true, stageBuild?.vcs?.excludeDefaultBranchChanges)
         assertEquals("+:master", stageBuild?.vcs?.branchFilter)
     }
-
-    private fun Project.findBuildByName(name: String) : BuildType? {
-        return buildTypes.find { build -> build.name == name }
-    }
 }

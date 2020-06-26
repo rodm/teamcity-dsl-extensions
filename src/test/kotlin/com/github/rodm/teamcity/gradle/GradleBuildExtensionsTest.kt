@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +16,7 @@
 
 package com.github.rodm.teamcity.gradle
 
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildFeature
+import com.github.rodm.teamcity.findParam
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.Consumer
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
@@ -176,11 +176,4 @@ class GradleBuildExtensionsTest {
 
         assertEquals(1, project.templates.size)
     }
-}
-
-fun BuildFeature.findParam(name: String) : String? {
-    params.forEach { param ->
-        if (param.name == name) return param.value
-    }
-    return null
 }
