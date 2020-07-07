@@ -79,8 +79,7 @@ class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : St
     init {
         buildType.id(name.toId("Stage_"))
         buildType.name = "Stage: $name"
-        buildType.type =
-            BuildTypeSettings.Type.COMPOSITE
+        buildType.type = BuildTypeSettings.Type.COMPOSITE
         buildType.vcs {
             showDependenciesChanges = true
         }
@@ -91,13 +90,13 @@ class DefaultStage(val name: String, private val pipeline: DefaultPipeline) : St
     }
 
     override fun template(init: Template.() -> Unit) : Template {
-        val template = Template().apply(init)
+        val template = Template(init)
         templates.add(template)
         return template
     }
 
     override fun defaults(init: BuildType.() -> Unit) {
-        defaults = BuildType().apply(init)
+        defaults = BuildType(init)
     }
 
     override fun build(init: StageBuildType.() -> Unit) {
@@ -169,7 +168,7 @@ class DefaultMatrix(private val stage: DefaultStage) : Matrix {
             val buildType = MatrixBuildType(stage, combination)
             stage.defaults.copyTo(buildType)
             buildType.init()
-            buildType.id(buildType.name.toId(""))
+            buildType.id(buildType.name.toId())
             stage.buildTypes.add(buildType)
         }
     }
