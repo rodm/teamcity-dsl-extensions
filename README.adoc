@@ -167,7 +167,6 @@ Multiple build configurations can be defined using the `matrix` configuration bl
 [source, kotlin]
 ----
     pipeline {
-        val artifact = Artifact("producerRules", "consumerRules")
         stage("Stage1") {
             matrix {
                 axes {
@@ -196,6 +195,35 @@ configuration block that can use values from the defined axes. A build configura
 of values defined when multiple axes are defined. An `axes` defines a name, in the above example `OS` and `JDK`, with
 a number of values, from the above example `Linux`, `Windows` and `Mac OS X` for `OS` and `JDK_18` and `JDK_11` for
 `JDK`. The example will create 6 build configurations, one for each combination of `OS` and `JDK`.
+
+If not all the combinations defined by the matrix axes are required, combinations can be removed by using the
+`excludes` block. Each exclusion is a map of name and value pairs, if a build configuration matches the
+values defined by the exclusion it is removed.
+
+The example below will create 4 build configurations, the combination of `Windows` and `JDK_18` and the combination
+of `Mac OS X` and `JDK_11` are removed.
+
+[source, kotlin]
+----
+   pipeline {
+        stage ("Stage1") {
+            matrix {
+                axes {
+                    "OS"("Linux", "Windows", "Mac OS X")
+                    "JDK"("JDK_18", "JDK_11")
+                }
+                excludes {
+                    exclude("OS" to "Windows", "JDK" to "JDK_18")
+                    exclude("OS" to "Mac OS X", "JDK" to "JDK_11")
+                }
+                build {
+                    name = "Build - ${axes["OS"]} - ${axes["JDK"]}"
+                    ...
+                }
+            }
+        }
+    }
+----
 
 Artifacts can be defined using the `Artifact` type. The `producerRules` and `consumerRules` patterns define the
 paths of build output artifacts collected from a producing build and the paths the artifacts are written to for
@@ -244,7 +272,7 @@ Configuring a GitHub issue tracker can be defined using the `githubIssueTracker`
 
 == Compatibility
 
-The library is compatible with TeamCity 2019.2.
+The library is compatible with TeamCity 2019.2 and 2020.1.
 
 == License
 
