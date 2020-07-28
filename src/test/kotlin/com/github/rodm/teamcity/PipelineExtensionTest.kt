@@ -160,6 +160,45 @@ class PipelineExtensionTest {
     }
 
     @Test
+    fun `sub-project stages and builds configuration order is display order`() {
+        val project = Project {
+            subProject {
+                name = "Sub project 1"
+                pipeline {
+                    stage("Stage1") {
+                        build {
+                            name = "Build1"
+                        }
+                    }
+                }
+            }
+            subProject {
+                name = "Sub project 2"
+                pipeline {
+                    stage("Stage2") {
+                        build {
+                            name = "Build2"
+                        }
+                    }
+                }
+            }
+        }
+
+        assertEquals(0, project.buildTypes.size)
+        assertEquals(2, project.subProjects.size)
+
+        val subProject1 = project.subProjects[0]
+        assertEquals(2, subProject1.buildTypesOrder.size)
+        assertEquals("Stage: Stage1", subProject1.buildTypesOrder[0].name)
+        assertEquals("Build1", subProject1.buildTypesOrder[1].name)
+
+        val subProject2 = project.subProjects[1]
+        assertEquals(2, subProject2.buildTypesOrder.size)
+        assertEquals("Stage: Stage2", subProject2.buildTypesOrder[0].name)
+        assertEquals("Build2", subProject2.buildTypesOrder[1].name)
+    }
+
+    @Test
     fun `stage depends on builds defined within a stage`() {
         val project = Project {
             pipeline {
