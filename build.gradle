@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.github.rodm'
-version = '0.6-SNAPSHOT'
+version = '0.6'
 
 ext {
     def urlName = "${project.version}".endsWith('-SNAPSHOT') ? 'repository.snapshots.url' : 'repository.releases.url'

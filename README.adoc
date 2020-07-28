@@ -3,7 +3,7 @@
 :uri-teamcity-documentation: https://confluence.jetbrains.com/display/TCD18
 :uri-teamcity-artifact-path: {uri-teamcity-documentation}/Configuring+General+Settings#ConfiguringGeneralSettings-ArtifactPaths
 :uri-teamcity-artifact-dep: {uri-teamcity-documentation}/Dependent+Build#DependentBuild-ArtifactDependency
-:library-version: 0.5
+:library-version: 0.6
 
 A library that extends the {uri-teamcity} DSL to create build configurations based on a Gradle build template.
 
