@@ -248,4 +248,4 @@ The library is compatible with TeamCity 2019.2.
 
 == License
 
-The library is available under the http://www.apache.org/licenses/LICENSE-2.0.html[Apache License, Version 2.0].
+The library is available under the https://www.apache.org/licenses/LICENSE-2.0.html[Apache License, Version 2.0].
