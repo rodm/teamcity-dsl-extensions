@@ -89,6 +89,7 @@ bintray {
     key = findProperty('bintray.key')
 
     publications = ['maven']
+    publish = true
 
     pkg {
         repo = 'maven'
