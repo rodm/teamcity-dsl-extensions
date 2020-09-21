@@ -94,7 +94,9 @@ interface Excludes {
 }
 
 @TeamCityDsl
-class MatrixBuildType(stage: Stage, val axes: Map<String,String>) : StageBuildType(stage)
+class MatrixBuildType(stage: Stage, val axes: Map<String,String>) : StageBuildType(stage) {
+    fun matrixName(): String = axes.entries.joinToString(" - ") { entry -> entry.value }
+}
 
 class DuplicateNameException(message: String) : Exception(message)
 

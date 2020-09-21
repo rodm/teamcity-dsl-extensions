@@ -284,6 +284,33 @@ class MatrixBuildTest {
     }
 
     @Test
+    fun `matrix build default name`() {
+        val project = Project {
+            pipeline {
+                stage ("Stage1") {
+                    matrix {
+                        axes {
+                            "OS"("Linux", "Windows")
+                            "JDK"("JDK_18", "JDK_11")
+                        }
+                        build {
+                            name = "Build - ${matrixName()}"
+                        }
+                    }
+                }
+            }
+        }
+
+        val expectedNames = arrayOf(
+            "Build - Linux - JDK_18",
+            "Build - Linux - JDK_11",
+            "Build - Windows - JDK_18",
+            "Build - Windows - JDK_11")
+        val names = project.buildTypes.map { it.name }
+        assertThat(names, hasItems(*expectedNames))
+    }
+
+    @Test
     fun `reject invalid name in excludes`() {
         val exception = assertThrows(Exception::class.java) {
             Project {
