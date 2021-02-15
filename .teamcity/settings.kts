@@ -8,7 +8,7 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
 import jetbrains.buildServer.configs.kotlin.v2019_2.version
 
-version = "2020.1"
+version = "2020.2"
 
 project {
 
@@ -109,24 +109,6 @@ project {
                     vcs {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = ""
-                        triggerRules = "-:.teamcity/**"
-                    }
-                }
-            }
-            build {
-                templates(buildTemplate)
-                id("PublishToBintray")
-                name = "Publish to Bintray"
-
-                params {
-                    param("gradle.opts", "${serverUrl} %bintray.opts%")
-                    param("gradle.tasks", "clean build bintrayUpload")
-                }
-
-                triggers {
-                    vcs {
-                        quietPeriodMode = USE_DEFAULT
-                        branchFilter = "+:v*"
                         triggerRules = "-:.teamcity/**"
                     }
                 }
