@@ -80,6 +80,29 @@ publishing {
     publications {
         maven(MavenPublication) {
             from components.java
+            pom {
+                name = 'TeamCity DSL Extension Library'
+                description = 'A  library that extends the TeamCity Kotlin DSL '
+                url = 'https://github.com/rodm/teamcity-dsl-extensions'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'rodm'
+                        name = 'Rod MacKenzie'
+                        email = 'rod.n.mackenzie@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/rodm/teamcity-dsl-extensions.git'
+                    developerConnection = 'scm:git:ssh://github.com/rodm/teamcity-dsl-extensions.git'
+                    url = 'https://github.com/rodm/teamcity-dsl-extensions'
+                }
+            }
         }
     }
 }
