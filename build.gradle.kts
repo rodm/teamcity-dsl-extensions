@@ -12,7 +12,7 @@ group = "com.github.rodm"
 version = "0.7-SNAPSHOT"
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven {
         url = uri("https://download.jetbrains.com/teamcity-repository")
     }
