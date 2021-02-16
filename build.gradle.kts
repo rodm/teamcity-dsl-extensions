@@ -32,9 +32,9 @@ dependencies {
     compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8")
     compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-script-runtime")
 
-    testImplementation (platform("org.junit:junit-bom:5.6.2"))
+    testImplementation (platform("org.junit:junit-bom:5.7.1"))
     testImplementation (group = "org.junit.jupiter", name = "junit-jupiter-api")
-    testImplementation (group = "org.hamcrest", name = "hamcrest-library", version = "2.2")
+    testImplementation (group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
     testRuntimeOnly (group = "org.junit.jupiter", name = "junit-jupiter-engine")
 }
