@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
-    id ("org.jetbrains.kotlin.jvm") version "1.3.72"
-    id ("org.sonarqube") version "2.8"
+    id ("org.jetbrains.kotlin.jvm") version "1.4.21"
+    id ("org.sonarqube") version "3.1.1"
 }
 
 group = "com.github.rodm"
