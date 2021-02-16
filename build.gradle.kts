@@ -2,6 +2,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
+    id ("org.gradle.signing")
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
     id ("org.jetbrains.kotlin.jvm") version "1.4.21"
@@ -106,4 +107,8 @@ publishing {
             }
         }
     }
+}
+
+signing {
+    sign(publishing.publications["maven"])
 }
