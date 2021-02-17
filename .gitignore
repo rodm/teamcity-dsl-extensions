@@ -11,5 +11,8 @@ out/
 *.iml
 *.iws
 
+# TeamCity Configs Maven plugin
+.teamcity/target/
+
 # macOS
 .DS_Store
