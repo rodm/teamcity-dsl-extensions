@@ -110,5 +110,6 @@ publishing {
 }
 
 signing {
+    isRequired = !"${project.version}".endsWith("-SNAPSHOT")
     sign(publishing.publications["maven"])
 }
