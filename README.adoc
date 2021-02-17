@@ -1,29 +1,19 @@
 = TeamCity DSL Extensions
 :uri-teamcity: https://www.jetbrains.com/teamcity/[TeamCity]
-:uri-teamcity-documentation: https://confluence.jetbrains.com/display/TCD18
-:uri-teamcity-artifact-path: {uri-teamcity-documentation}/Configuring+General+Settings#ConfiguringGeneralSettings-ArtifactPaths
-:uri-teamcity-artifact-dep: {uri-teamcity-documentation}/Dependent+Build#DependentBuild-ArtifactDependency
-:library-version: 0.6
+:uri-teamcity-documentation: https://www.jetbrains.com/help/teamcity
+:uri-teamcity-kotlin-dsl: {uri-teamcity-documentation}/kotlin-dsl.html
+:uri-teamcity-artifact-path: {uri-teamcity-documentation}/configuring-general-settings.html#Artifact+Paths
+:uri-teamcity-artifact-dep: {uri-teamcity-documentation}/dependent-build.html#Artifact+Dependency
+:library-version: 0.7
 
-A library that extends the {uri-teamcity} DSL to create build configurations based on a Gradle build template.
+A library that extends the {uri-teamcity-kotlin-dsl}[TeamCity Kotlin DSL] to create build configurations.
 
 == Using the library
 
-To use the library add the following repository and dependency to the Maven POM in the `.teamcity` directory.
+To use the library add the following dependency to the Maven POM in the `.teamcity` directory.
 
 [source,xml,subs="attributes,verbatim"]
 ----
-    <repository>
-        <id>bintray-rodm-maven</id>
-        <name>bintray</name>
-        <url>https://dl.bintray.com/rodm/maven</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-    </repository>
-
-    ...
-
     <dependency>
         <groupId>com.github.rodm</groupId>
         <artifactId>teamcity-dsl-extensions</artifactId>
@@ -272,7 +262,7 @@ Configuring a GitHub issue tracker can be defined using the `githubIssueTracker`
 
 == Compatibility
 
-The library is compatible with TeamCity 2019.2 and 2020.1.
+The library is compatible with TeamCity 2020.2 and later.
 
 == License
 
