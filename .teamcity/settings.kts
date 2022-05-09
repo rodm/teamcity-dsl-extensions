@@ -16,8 +16,9 @@ project {
         id("TeamcityDslExtensions")
         name = "teamcity-dsl-extensions"
         url = "https://github.com/rodm/teamcity-dsl-extensions.git"
+        branch = "refs/heads/main"
         branchSpec = """
-            +:refs/heads/(master)
+            +:refs/heads/(main)
             +:refs/tags/(*)
         """.trimIndent()
         useTagsAsBranches = true
