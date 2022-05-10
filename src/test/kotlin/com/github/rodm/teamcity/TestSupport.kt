@@ -16,9 +16,9 @@
 
 package com.github.rodm.teamcity
 
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2019_2.Project
-import jetbrains.buildServer.configs.kotlin.v2019_2.Parametrized
+import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.Project
+import jetbrains.buildServer.configs.kotlin.Parametrized
 
 fun Project.findBuildByName(name: String) : BuildType? {
     return buildTypes.find { build -> build.name == name }

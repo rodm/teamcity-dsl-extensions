@@ -17,7 +17,7 @@
 package com.github.rodm.teamcity.project
 
 import com.github.rodm.teamcity.findParam
-import jetbrains.buildServer.configs.kotlin.v2019_2.Project
+import jetbrains.buildServer.configs.kotlin.Project
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

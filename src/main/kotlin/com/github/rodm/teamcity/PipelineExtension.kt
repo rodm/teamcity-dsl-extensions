@@ -17,11 +17,11 @@
 package com.github.rodm.teamcity
 
 import com.github.rodm.teamcity.internal.DefaultPipeline
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2019_2.Project
-import jetbrains.buildServer.configs.kotlin.v2019_2.TeamCityDsl
-import jetbrains.buildServer.configs.kotlin.v2019_2.Template
-import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
+import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.Project
+import jetbrains.buildServer.configs.kotlin.TeamCityDsl
+import jetbrains.buildServer.configs.kotlin.Template
+import jetbrains.buildServer.configs.kotlin.VcsSettings
 
 fun Project.pipeline(init: Pipeline.() -> Unit) : Pipeline {
     val pipeline = DefaultPipeline().apply(init)

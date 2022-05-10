@@ -25,12 +25,12 @@ import com.github.rodm.teamcity.NameNotFoundException
 import com.github.rodm.teamcity.DuplicateNameException
 import com.github.rodm.teamcity.Pipeline
 import com.github.rodm.teamcity.StageBuildType
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
-import jetbrains.buildServer.configs.kotlin.v2019_2.BuildTypeSettings
-import jetbrains.buildServer.configs.kotlin.v2019_2.Template
-import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
-import jetbrains.buildServer.configs.kotlin.v2019_2.copyTo
-import jetbrains.buildServer.configs.kotlin.v2019_2.toId
+import jetbrains.buildServer.configs.kotlin.BuildType
+import jetbrains.buildServer.configs.kotlin.BuildTypeSettings
+import jetbrains.buildServer.configs.kotlin.Template
+import jetbrains.buildServer.configs.kotlin.VcsSettings
+import jetbrains.buildServer.configs.kotlin.copyTo
+import jetbrains.buildServer.configs.kotlin.toId
 
 class DefaultPipeline : Pipeline {
     val stages = arrayListOf<DefaultStage>()

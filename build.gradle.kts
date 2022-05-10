@@ -28,10 +28,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-plugins", version = "1.0-SNAPSHOT")
-    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin")
-    compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8")
-    compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-script-runtime")
+    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT")
+    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-latest")
 
     testImplementation (platform("org.junit:junit-bom:5.8.2"))
     testImplementation (group = "org.junit.jupiter", name = "junit-jupiter-api")
