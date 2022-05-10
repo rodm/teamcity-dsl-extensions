@@ -105,7 +105,8 @@ class GradleBuildExtensionsTest {
 
         assertEquals(1, buildType.steps.items.size)
         val buildSteps = buildType.steps
-        assertEquals("simpleRunner", buildSteps.items[0].type)
+        assertEquals("gradle-runner", buildSteps.items[0].type)
+        assertEquals("SWITCH_GRADLE", buildSteps.items[0].id)
     }
 
     @Test

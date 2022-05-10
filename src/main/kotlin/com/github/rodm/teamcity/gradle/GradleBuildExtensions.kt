@@ -21,7 +21,6 @@ import jetbrains.buildServer.configs.kotlin.BuildFeatures
 import jetbrains.buildServer.configs.kotlin.ErrorConsumer
 import jetbrains.buildServer.configs.kotlin.BuildSteps
 import jetbrains.buildServer.configs.kotlin.Project
-import jetbrains.buildServer.configs.kotlin.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.Template
 import jetbrains.buildServer.configs.kotlin.buildSteps.gradle
 
@@ -69,13 +68,11 @@ fun BuildFeatures.gradleBuildCache(init: GradleBuildCache.() -> Unit): GradleBui
 }
 
 fun BuildSteps.switchGradleBuildStep() {
-    script {
+    gradle {
         id = "SWITCH_GRADLE"
-        scriptContent = """
-            #!/bin/sh
-            JAVA_HOME=%java8.home% ./gradlew wrapper --gradle-version=%gradle.version%
-            JAVA_HOME=%java.home% ./gradlew --version
-            """.trimIndent()
+        name = "Switch Gradle"
+        tasks = "wrapper --gradle-version %gradle.version%"
+        jdkHome = "%default.java.home%"
     }
 }
 
