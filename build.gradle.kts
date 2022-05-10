@@ -6,7 +6,7 @@ plugins {
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
     id ("org.jetbrains.kotlin.jvm") version "1.6.21"
-    id ("org.sonarqube") version "3.1.1"
+    id ("org.sonarqube") version "3.3"
 }
 
 group = "com.github.rodm"
@@ -33,7 +33,7 @@ dependencies {
     compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-stdlib-jdk8")
     compileOnly (group = "org.jetbrains.kotlin", name = "kotlin-script-runtime")
 
-    testImplementation (platform("org.junit:junit-bom:5.7.1"))
+    testImplementation (platform("org.junit:junit-bom:5.8.2"))
     testImplementation (group = "org.junit.jupiter", name = "junit-jupiter-api")
     testImplementation (group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
@@ -63,7 +63,7 @@ tasks.named<Test>("test") {
 
 tasks.named<JacocoReport>("jacocoTestReport") {
     reports {
-        xml.isEnabled = true
+        xml.required.set(true)
     }
 }
 
