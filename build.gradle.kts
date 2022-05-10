@@ -70,7 +70,7 @@ publishing {
         maven {
             val urlName = if ("${project.version}".endsWith("-SNAPSHOT"))  "repository.snapshots.url" else "repository.releases.url"
             url = uri(findProperty(urlName) ?: "")
-            isAllowInsecureProtocol = "true" == findProperty("repository.allowInsecureProtocol") as String
+            isAllowInsecureProtocol = "true" == (findProperty("repository.allowInsecureProtocol") ?: "")
 
             credentials {
                 val repositoryUsername = findProperty("repository.username") as String? ?: ""
