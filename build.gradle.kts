@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.github.rodm"
-version = "0.8-SNAPSHOT"
+version = "0.8"
 
 repositories {
     mavenCentral()
