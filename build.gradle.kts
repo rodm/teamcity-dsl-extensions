@@ -5,7 +5,7 @@ plugins {
     id ("org.gradle.signing")
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
-    id ("org.jetbrains.kotlin.jvm") version "1.6.21"
+    id ("org.jetbrains.kotlin.jvm") version "1.8.22"
     id ("org.sonarqube") version "3.3"
 }
 
@@ -36,7 +36,7 @@ dependencies {
     testImplementation (group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
     testRuntimeOnly (group = "org.junit.jupiter", name = "junit-jupiter-engine")
-    testRuntimeOnly (group = "org.jetbrains.teamcity", name = "server-api", version = "2022.04")
+    testRuntimeOnly (group = "org.jetbrains.teamcity", name = "server-api", version = "2023.11")
 }
 
 java {
