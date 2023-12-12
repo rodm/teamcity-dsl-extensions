@@ -6,7 +6,7 @@ plugins {
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
     id ("org.jetbrains.kotlin.jvm") version "1.8.22"
-    id ("org.sonarqube") version "3.3"
+    id ("org.sonarqube") version "4.0.0.2929"
 }
 
 group = "com.github.rodm"
@@ -31,10 +31,11 @@ dependencies {
     compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT")
     compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-latest")
 
-    testImplementation (platform("org.junit:junit-bom:5.8.2"))
+    testImplementation (platform("org.junit:junit-bom:5.10.1"))
     testImplementation (group = "org.junit.jupiter", name = "junit-jupiter-api")
     testImplementation (group = "org.hamcrest", name = "hamcrest", version = "2.2")
 
+    testRuntimeOnly (group = "org.junit.platform", name = "junit-platform-launcher")
     testRuntimeOnly (group = "org.junit.jupiter", name = "junit-jupiter-engine")
     testRuntimeOnly (group = "org.jetbrains.teamcity", name = "server-api", version = "2023.11")
 }
@@ -42,10 +43,6 @@ dependencies {
 java {
     withJavadocJar()
     withSourcesJar()
-}
-
-jacoco {
-    toolVersion = "0.8.8"
 }
 
 tasks.named<KotlinCompile>("compileTestKotlin") {
