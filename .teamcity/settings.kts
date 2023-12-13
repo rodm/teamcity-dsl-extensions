@@ -111,7 +111,9 @@ project {
                     vcs {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = ""
-                        triggerRules = "-:.teamcity/**"
+                        triggerRules = """
+                            -:README.adoc
+                        """.trimIndent()
                     }
                 }
             }
