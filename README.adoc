@@ -7,7 +7,7 @@
 :uri-maven-central-version: https://img.shields.io/maven-central/v/com.github.rodm/teamcity-dsl-extensions.svg
 :uri-maven-central-project: https://search.maven.org/search?q=g:%22com.github.rodm%22%20AND%20a:%22teamcity-dsl-extensions%22
 :uri-github-project-license: https://img.shields.io/github/license/rodm/teamcity-dsl-extensions
-:library-version: 0.8
+:library-version: 0.9
 
 image:{uri-maven-central-version}?label=Maven%20Central[Maven Central, link="{uri-maven-central-project}"]
 image:{uri-github-project-license}?label=License[License]
@@ -269,7 +269,7 @@ Configuring a GitHub issue tracker can be defined using the `githubIssueTracker`
 
 == Compatibility
 
-The library is compatible with TeamCity 2022.04 and later.
+The library is compatible with TeamCity 2023.11 and later.
 
 == License
 
