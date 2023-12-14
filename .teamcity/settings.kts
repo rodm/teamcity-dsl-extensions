@@ -112,6 +112,7 @@ project {
                         quietPeriodMode = USE_DEFAULT
                         branchFilter = ""
                         triggerRules = """
+                            -:.github/**
                             -:README.adoc
                         """.trimIndent()
                     }
