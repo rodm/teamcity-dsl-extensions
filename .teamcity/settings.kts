@@ -103,7 +103,7 @@ project {
                 name = "Publish to Nexus"
 
                 params {
-                    param("gradle.opts", "${serverUrl} %nexus.opts%")
+                    param("gradle.opts", "${serverUrl} %nexus.opts% %signing.opts%")
                     param("gradle.tasks", "clean build publishMavenPublicationToMavenRepository")
                 }
 

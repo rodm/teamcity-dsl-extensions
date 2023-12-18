@@ -111,6 +111,12 @@ publishing {
 }
 
 signing {
+    val signKeyId = findProperty("signing.keyId") as String?
+    val signKey = findProperty("signing.key") as String?
+    val signPassword = findProperty("signing.password") as String?
+
     isRequired = !"${project.version}".endsWith("-SNAPSHOT")
+    useInMemoryPgpKeys(signKeyId, signKey, signPassword)
+
     sign(publishing.publications["maven"])
 }
