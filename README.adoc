@@ -269,7 +269,17 @@ Configuring a GitHub issue tracker can be defined using the `githubIssueTracker`
 
 == Compatibility
 
-The library is compatible with TeamCity 2023.11 and later.
+=== Library versions and the supported TeamCity versions
+
+|===
+|Library version |TeamCity version
+|0.9
+|2023.11 and later
+|0.8
+|2022.04 to 2023.05
+|0.7
+|2020.2 to 2021.2
+|===
 
 == License
 
