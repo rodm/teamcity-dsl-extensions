@@ -68,11 +68,15 @@ fun BuildFeatures.gradleBuildCache(init: GradleBuildCache.() -> Unit): GradleBui
 }
 
 fun BuildSteps.switchGradleBuildStep() {
+    switchGradleBuildStep("%default.java.home%", "%gradle.version%")
+}
+
+fun BuildSteps.switchGradleBuildStep(javaHome: String, gradleVersion: String) {
     gradle {
         id = "SWITCH_GRADLE"
         name = "Switch Gradle"
-        tasks = "wrapper --gradle-version %gradle.version%"
-        jdkHome = "%default.java.home%"
+        tasks = "wrapper --gradle-version $gradleVersion"
+        jdkHome = javaHome
     }
 }
 

@@ -104,9 +104,25 @@ class GradleBuildExtensionsTest {
         }
 
         assertEquals(1, buildType.steps.items.size)
-        val buildSteps = buildType.steps
-        assertEquals("gradle-runner", buildSteps.items[0].type)
-        assertEquals("SWITCH_GRADLE", buildSteps.items[0].id)
+        val gradleBuildStep = buildType.steps.items[0] as GradleBuildStep
+        assertEquals("gradle-runner", gradleBuildStep.type)
+        assertEquals("SWITCH_GRADLE", gradleBuildStep.id)
+        assertEquals("%default.java.home%", gradleBuildStep.jdkHome)
+        assertEquals("wrapper --gradle-version %gradle.version%", gradleBuildStep.tasks)
+    }
+
+    @Test
+    fun `add build step to switch Gradle version with specified Java home and Gradle version`() {
+        val buildType = BuildType {
+            steps {
+                switchGradleBuildStep("/example/jdk", "1.2.3")
+            }
+        }
+
+        assertEquals(1, buildType.steps.items.size)
+        val gradleBuildStep = buildType.steps.items[0] as GradleBuildStep
+        assertEquals("/example/jdk", gradleBuildStep.jdkHome)
+        assertEquals("wrapper --gradle-version 1.2.3", gradleBuildStep.tasks)
     }
 
     @Test
