@@ -3,8 +3,8 @@ plugins {
     id ("org.gradle.signing")
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
-    id ("org.jetbrains.kotlin.jvm") version "2.1.0"
-    id ("org.sonarqube") version "4.0.0.2929"
+    alias (libs.plugins.kotlin)
+    alias (libs.plugins.sonarqube)
 }
 
 group = "com.github.rodm"
@@ -29,13 +29,13 @@ dependencies {
     compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT")
     compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-latest")
 
-    testImplementation (platform("org.junit:junit-bom:5.10.1"))
-    testImplementation (group = "org.junit.jupiter", name = "junit-jupiter-api")
-    testImplementation (group = "org.hamcrest", name = "hamcrest", version = "2.2")
+    testImplementation (platform(libs.junit.bom))
+    testImplementation (libs.junit.jupiter.api)
+    testImplementation (libs.hamcrest)
 
-    testRuntimeOnly (group = "org.junit.platform", name = "junit-platform-launcher")
-    testRuntimeOnly (group = "org.junit.jupiter", name = "junit-jupiter-engine")
-    testRuntimeOnly (group = "org.jetbrains.teamcity", name = "server-api", version = "2023.11")
+    testRuntimeOnly (libs.junit.platform.launcher)
+    testRuntimeOnly (libs.junit.jupiter.engine)
+    testRuntimeOnly (libs.teamcity.server.api)
 }
 
 java {

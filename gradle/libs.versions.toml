@@ -1,0 +1,17 @@
+
+[versions]
+junit = "5.11.3"
+hamcrest = "3.0"
+teamcity = "2024.12"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.1.0" }
+sonarqube = { id = "org.sonarqube", version = "4.0.0.2929" }
+
+[libraries]
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
+teamcity-server-api = { module = "org.jetbrains.teamcity:server-api", version.ref = "teamcity" }
