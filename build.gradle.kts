@@ -1,11 +1,9 @@
 
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id ("org.gradle.signing")
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
-    id ("org.jetbrains.kotlin.jvm") version "1.8.22"
+    id ("org.jetbrains.kotlin.jvm") version "2.1.0"
     id ("org.sonarqube") version "4.0.0.2929"
 }
 
@@ -41,14 +39,11 @@ dependencies {
 }
 
 java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
     withJavadocJar()
     withSourcesJar()
-}
-
-tasks.named<KotlinCompile>("compileTestKotlin") {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 tasks.named<Test>("test") {
