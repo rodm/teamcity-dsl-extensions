@@ -5,8 +5,8 @@ hamcrest = "3.0"
 teamcity = "2024.12"
 
 [plugins]
-kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.1.0" }
-sonarqube = { id = "org.sonarqube", version = "4.0.0.2929" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.2.0" }
+sonarqube = { id = "org.sonarqube", version = "6.2.0.5505" }
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
