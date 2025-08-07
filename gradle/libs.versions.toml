@@ -1,8 +1,8 @@
 
 [versions]
-junit = "5.11.3"
+junit = "5.13.4"
 hamcrest = "3.0"
-teamcity = "2024.12"
+teamcity = "2025.07"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.2.0" }
