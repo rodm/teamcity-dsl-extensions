@@ -1,0 +1,32 @@
+
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+    paths-ignore:
+      - '.teamcity/**'
+      - 'README.adoc'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: 8
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Build and run tests
+        run: ./gradlew --show-version -s build -Pteamcity.server.url=https://teamcity.jetbrains.com/app/dsl-plugins-repository
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: reports
+          path: build/reports/**
+          retention-days: 3
