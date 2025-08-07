@@ -26,8 +26,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT")
-    compileOnly (group = "org.jetbrains.teamcity", name = "configs-dsl-kotlin-latest")
+    compileOnly (libs.teamcity.dsl.plugins)
+    compileOnly (libs.teamcity.dsl)
 
     testImplementation (platform(libs.junit.bom))
     testImplementation (libs.junit.jupiter.api)

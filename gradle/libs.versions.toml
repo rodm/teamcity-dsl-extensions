@@ -9,6 +9,9 @@ kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.2.0" }
 sonarqube = { id = "org.sonarqube", version = "6.2.0.5505" }
 
 [libraries]
+teamcity-dsl-plugins = { module = "org.jetbrains.teamcity:configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT" }
+teamcity-dsl = { module = "org.jetbrains.teamcity:configs-dsl-kotlin-latest" }
+
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api" }
 junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
