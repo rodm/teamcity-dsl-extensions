@@ -1,10 +1,10 @@
-
 plugins {
     id ("org.gradle.signing")
     id ("org.gradle.maven-publish")
     id ("org.gradle.jacoco")
     alias (libs.plugins.kotlin)
     alias (libs.plugins.sonarqube)
+    alias (libs.plugins.teamcity)
 }
 
 group = "com.github.rodm"
@@ -114,4 +114,12 @@ signing {
     useInMemoryPgpKeys(signKeyId, signKey, signPassword)
 
     sign(publishing.publications["maven"])
+}
+
+teamcity {
+    environments {
+        register("Teamcity") {
+            version = "2025.11"
+        }
+    }
 }

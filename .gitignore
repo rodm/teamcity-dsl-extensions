@@ -14,5 +14,8 @@ out/
 # TeamCity Configs Maven plugin
 .teamcity/target/
 
+# Gradle TeamCity plugin
+data/
+
 # macOS
 .DS_Store

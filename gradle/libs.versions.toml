@@ -7,6 +7,7 @@ teamcity = "2025.11"
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version = "2.0.21" }
 sonarqube = { id = "org.sonarqube", version = "7.2.0.6526" }
+teamcity = { id = "io.github.rodm.teamcity-environments", version = "1.5.6" }
 
 [libraries]
 teamcity-dsl-plugins = { module = "org.jetbrains.teamcity:configs-dsl-kotlin-plugins-latest", version = "1.0-SNAPSHOT" }
